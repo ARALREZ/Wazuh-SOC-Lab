@@ -1,0 +1,2 @@
+gobuster dir -u http://192.168.122.X/ -w /usr/share/wordlists/dirb/common.txt -t 20
+

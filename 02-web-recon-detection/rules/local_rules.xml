@@ -1,0 +1,23 @@
+<group name="web,reconnaissance,">
+
+  <!-- Reguła 1: Wykrywanie podejrzanego User-Agenta (Gobuster / Nikto) -->
+  <rule id="100020" level="7">
+    <if_sid>31100</if_sid>
+    <field name="user_agent">gobuster|Nikto|dirbuster|sqlmap</field>
+    <description>SOC-Lab: Detected Web Reconnaissance Tool User-Agent ($(user_agent)) from $(srcip)</description>
+    <mitre>
+      <id>T1595.002</id>
+    </mitre>
+  </rule>
+
+  <!-- Reguła 2: Wykrywanie ataku Directory Brute-Force (Wysoki wolumen 404) -->
+  <rule id="100021" level="10" frequency="15" timeframe="10">
+    <if_matched_sid>31108</if_matched_sid>
+    <same_source_ip />
+    <description>SOC-Lab: Potential Web Directory Brute-Force Attack from IP $(srcip) (High 404 count)</description>
+    <mitre>
+      <id>T1110</id>
+    </mitre>
+  </rule>
+
+</group>
