@@ -1,0 +1,100 @@
+2026-08-30T21:07:59.169652+02:00 aralrez-Victus-HP polkitd[845]: Registered Authentication Agent for unix-session:c1 (system bus name :1.40 [/usr/bin/gnome-shell], object path /org/freedesktop/PolicyKit1/AuthenticationAgent, locale en_US.UTF-8)
+2026-08-30T21:08:13.237999+02:00 aralrez-Victus-HP gdm-password]: gkr-pam: unable to locate daemon control file
+2026-08-30T21:08:13.238067+02:00 aralrez-Victus-HP gdm-password]: gkr-pam: stashed password to try later in open session
+2026-08-30T21:08:13.247389+02:00 aralrez-Victus-HP gdm-password]: pam_unix(gdm-password:session): session opened for user aralrez(uid=1000) by aralrez(uid=0)
+2026-08-30T21:08:13.268508+02:00 aralrez-Victus-HP systemd-logind[863]: New session 2 of user aralrez.
+2026-08-30T21:08:13.285653+02:00 aralrez-Victus-HP (systemd): pam_unix(systemd-user:session): session opened for user aralrez(uid=1000) by aralrez(uid=0)
+2026-08-30T21:08:13.432919+02:00 aralrez-Victus-HP gnome-keyring-daemon[3405]: keyring was in an invalid or unrecognized format: /home/aralrez/.local/share/keyrings/default.keyring
+2026-08-30T21:08:13.437614+02:00 aralrez-Victus-HP gdm-password]: gkr-pam: unlocked login keyring
+2026-08-30T21:08:16.501062+02:00 aralrez-Victus-HP gnome-keyring-daemon[3405]: The Secret Service was already initialized
+2026-08-30T21:08:16.501511+02:00 aralrez-Victus-HP gnome-keyring-daemon[3706]: discover_other_daemon: 1
+2026-08-30T21:08:16.502965+02:00 aralrez-Victus-HP gnome-keyring-daemon[3405]: The PKCS#11 component was already initialized
+2026-08-30T21:08:16.503583+02:00 aralrez-Victus-HP gnome-keyring-daemon[3710]: discover_other_daemon: 1
+2026-08-30T21:08:16.524754+02:00 aralrez-Victus-HP gnome-keyring-daemon[3712]: discover_other_daemon: 1
+2026-08-30T21:08:17.885807+02:00 aralrez-Victus-HP polkitd[845]: Registered Authentication Agent for unix-session:2 (system bus name :1.80 [/usr/bin/gnome-shell], object path /org/freedesktop/PolicyKit1/AuthenticationAgent, locale en_US.UTF-8)
+2026-08-30T21:08:19.304638+02:00 aralrez-Victus-HP polkitd[845]: Unregistered Authentication Agent for unix-session:c1 (system bus name :1.40, object path /org/freedesktop/PolicyKit1/AuthenticationAgent, locale en_US.UTF-8) (disconnected from bus)
+2026-08-30T21:08:19.442776+02:00 aralrez-Victus-HP gdm-launch-environment]: pam_unix(gdm-launch-environment:session): session closed for user gdm
+2026-08-30T21:08:19.448091+02:00 aralrez-Victus-HP systemd-logind[863]: Session c1 logged out. Waiting for processes to exit.
+2026-08-30T21:08:19.450439+02:00 aralrez-Victus-HP systemd-logind[863]: Removed session c1.
+2026-08-30T21:08:20.308806+02:00 aralrez-Victus-HP PackageKit: uid 1000 is trying to obtain org.freedesktop.packagekit.system-sources-refresh auth (only_trusted:0)
+2026-08-30T21:08:20.313565+02:00 aralrez-Victus-HP PackageKit: uid 1000 obtained auth for org.freedesktop.packagekit.system-sources-refresh
+2026-08-30T21:08:29.643090+02:00 aralrez-Victus-HP (sd-pam): pam_unix(systemd-user:session): session closed for user gdm
+2026-08-30T21:09:27.927941+02:00 aralrez-Victus-HP systemd-machined[865]: New machine qemu-1-Wazuh-server-ubuntu.
+2026-08-30T21:09:30.326050+02:00 aralrez-Victus-HP systemd-machined[865]: New machine qemu-2-linux2024.
+2026-08-30T21:12:27.007653+02:00 aralrez-Victus-HP sudo: pam_unix(sudo:auth): authentication failure; logname=aralrez uid=1000 euid=0 tty=/dev/pts/3 ruser=aralrez rhost=  user=aralrez
+2026-08-30T21:12:35.038897+02:00 aralrez-Victus-HP sudo:  aralrez : TTY=pts/3 ; PWD=/home/aralrez ; USER=root ; COMMAND=/usr/bin/systemctl status wazuh-agent
+2026-08-30T21:12:35.040866+02:00 aralrez-Victus-HP sudo: pam_unix(sudo:session): session opened for user root(uid=0) by aralrez(uid=1000)
+2026-08-30T21:12:37.048996+02:00 aralrez-Victus-HP sudo: pam_unix(sudo:session): session closed for user root
+2026-08-30T21:12:43.538913+02:00 aralrez-Victus-HP sudo:  aralrez : TTY=pts/3 ; PWD=/home/aralrez ; USER=root ; COMMAND=/usr/bin/systemctl restart wazuh-agent
+2026-08-30T21:12:43.540200+02:00 aralrez-Victus-HP sudo: pam_unix(sudo:session): session opened for user root(uid=0) by aralrez(uid=1000)
+2026-08-30T21:12:50.879852+02:00 aralrez-Victus-HP sudo: pam_unix(sudo:session): session closed for user root
+2026-08-30T21:14:07.756747+02:00 aralrez-Victus-HP sshd[9466]: pam_unix(sshd:auth): authentication failure; logname= uid=0 euid=0 tty=ssh ruser= rhost=192.168.122.121  user=aralrez
+2026-08-30T21:14:10.053335+02:00 aralrez-Victus-HP sshd[9466]: Failed password for aralrez from 192.168.122.121 port 50728 ssh2
+2026-08-30T21:14:16.435085+02:00 aralrez-Victus-HP sshd[9466]: Failed password for aralrez from 192.168.122.121 port 50728 ssh2
+2026-08-30T21:14:25.232357+02:00 aralrez-Victus-HP sshd[9466]: Accepted password for aralrez from 192.168.122.121 port 50728 ssh2
+2026-08-30T21:14:25.235421+02:00 aralrez-Victus-HP sshd[9466]: pam_unix(sshd:session): session opened for user aralrez(uid=1000) by aralrez(uid=0)
+2026-08-30T21:14:25.242609+02:00 aralrez-Victus-HP systemd-logind[863]: New session 4 of user aralrez.
+2026-08-30T21:15:01.701173+02:00 aralrez-Victus-HP CRON[10999]: pam_unix(cron:session): session opened for user root(uid=0) by root(uid=0)
+2026-08-30T21:15:01.720657+02:00 aralrez-Victus-HP CRON[10999]: pam_unix(cron:session): session closed for user root
+2026-08-30T21:15:22.810198+02:00 aralrez-Victus-HP sshd[10009]: Received disconnect from 192.168.122.121 port 50728:11: disconnected by user
+2026-08-30T21:15:22.810430+02:00 aralrez-Victus-HP sshd[10009]: Disconnected from user aralrez 192.168.122.121 port 50728
+2026-08-30T21:15:22.810972+02:00 aralrez-Victus-HP sshd[9466]: pam_unix(sshd:session): session closed for user aralrez
+2026-08-30T21:15:22.815551+02:00 aralrez-Victus-HP systemd-logind[863]: Session 4 logged out. Waiting for processes to exit.
+2026-08-30T21:15:22.816473+02:00 aralrez-Victus-HP systemd-logind[863]: Removed session 4.
+2026-08-30T21:17:01.732353+02:00 aralrez-Victus-HP CRON[11712]: pam_unix(cron:session): session opened for user root(uid=0) by root(uid=0)
+2026-08-30T21:17:01.744371+02:00 aralrez-Victus-HP CRON[11712]: pam_unix(cron:session): session closed for user root
+2026-08-30T21:18:59.287604+02:00 aralrez-Victus-HP sshd[14561]: Received disconnect from 192.168.122.121 port 54284:11: Bye Bye [preauth]
+2026-08-30T21:18:59.287846+02:00 aralrez-Victus-HP sshd[14561]: Disconnected from authenticating user aralrez 192.168.122.121 port 54284 [preauth]
+2026-08-30T21:18:59.586380+02:00 aralrez-Victus-HP sshd[14569]: pam_unix(sshd:auth): authentication failure; logname= uid=0 euid=0 tty=ssh ruser= rhost=192.168.122.121  user=aralrez
+2026-08-30T21:19:01.967771+02:00 aralrez-Victus-HP sshd[14569]: Failed password for aralrez from 192.168.122.121 port 54298 ssh2
+2026-08-30T21:19:19.039034+02:00 aralrez-Victus-HP sshd[14569]: message repeated 2 times: [ Failed password for aralrez from 192.168.122.121 port 54298 ssh2]
+2026-08-30T21:19:54.958264+02:00 aralrez-Victus-HP sshd[14569]: Failed password for aralrez from 192.168.122.121 port 54298 ssh2
+2026-08-30T21:19:58.771655+02:00 aralrez-Victus-HP sshd[14569]: Connection closed by authenticating user aralrez 192.168.122.121 port 54298 [preauth]
+2026-08-30T21:19:58.771904+02:00 aralrez-Victus-HP sshd[14569]: PAM 3 more authentication failures; logname= uid=0 euid=0 tty=ssh ruser= rhost=192.168.122.121  user=aralrez
+2026-08-30T21:19:58.772232+02:00 aralrez-Victus-HP sshd[14569]: PAM service(sshd) ignoring max retries; 4 > 3
+2026-08-30T21:20:10.114599+02:00 aralrez-Victus-HP sshd[15777]: Accepted password for aralrez from 192.168.122.121 port 42534 ssh2
+2026-08-30T21:20:10.118570+02:00 aralrez-Victus-HP sshd[15777]: pam_unix(sshd:session): session opened for user aralrez(uid=1000) by aralrez(uid=0)
+2026-08-30T21:20:10.126665+02:00 aralrez-Victus-HP systemd-logind[863]: New session 7 of user aralrez.
+2026-08-30T21:23:22.859096+02:00 aralrez-Victus-HP sshd[15837]: Received disconnect from 192.168.122.121 port 42534:11: disconnected by user
+2026-08-30T21:23:22.865250+02:00 aralrez-Victus-HP sshd[15837]: Disconnected from user aralrez 192.168.122.121 port 42534
+2026-08-30T21:23:22.865464+02:00 aralrez-Victus-HP sshd[15777]: pam_unix(sshd:session): session closed for user aralrez
+2026-08-30T21:23:22.867695+02:00 aralrez-Victus-HP systemd-logind[863]: Session 7 logged out. Waiting for processes to exit.
+2026-08-30T21:23:22.869037+02:00 aralrez-Victus-HP systemd-logind[863]: Removed session 7.
+2026-08-30T21:24:24.575319+02:00 aralrez-Victus-HP sshd[16499]: Received disconnect from 192.168.122.121 port 54638:11: Bye Bye [preauth]
+2026-08-30T21:24:24.575823+02:00 aralrez-Victus-HP sshd[16499]: Disconnected from authenticating user aralrez 192.168.122.121 port 54638 [preauth]
+2026-08-30T21:24:24.871400+02:00 aralrez-Victus-HP sshd[16501]: pam_unix(sshd:auth): authentication failure; logname= uid=0 euid=0 tty=ssh ruser= rhost=192.168.122.121  user=aralrez
+2026-08-30T21:24:26.871173+02:00 aralrez-Victus-HP sshd[16501]: Failed password for aralrez from 192.168.122.121 port 54648 ssh2
+2026-08-30T21:24:35.468831+02:00 aralrez-Victus-HP sshd[16501]: Failed password for aralrez from 192.168.122.121 port 54648 ssh2
+2026-08-30T21:25:01.763907+02:00 aralrez-Victus-HP CRON[16631]: pam_unix(cron:session): session opened for user root(uid=0) by root(uid=0)
+2026-08-30T21:25:01.768251+02:00 aralrez-Victus-HP CRON[16631]: pam_unix(cron:session): session closed for user root
+2026-08-30T21:25:26.787264+02:00 aralrez-Victus-HP sshd[16708]: pam_unix(sshd:auth): authentication failure; logname= uid=0 euid=0 tty=ssh ruser= rhost=192.168.122.121  user=aralrez
+2026-08-30T21:25:28.295498+02:00 aralrez-Victus-HP sshd[16708]: Failed password for aralrez from 192.168.122.121 port 37324 ssh2
+2026-08-30T21:25:36.191705+02:00 aralrez-Victus-HP sshd[16708]: Accepted password for aralrez from 192.168.122.121 port 37324 ssh2
+2026-08-30T21:25:36.194318+02:00 aralrez-Victus-HP sshd[16708]: pam_unix(sshd:session): session opened for user aralrez(uid=1000) by aralrez(uid=0)
+2026-08-30T21:25:36.200427+02:00 aralrez-Victus-HP systemd-logind[863]: New session 9 of user aralrez.
+2026-08-30T21:25:39.694998+02:00 aralrez-Victus-HP sshd[16501]: Failed password for aralrez from 192.168.122.121 port 54648 ssh2
+2026-08-30T21:25:40.035515+02:00 aralrez-Victus-HP sshd[16501]: Connection closed by authenticating user aralrez 192.168.122.121 port 54648 [preauth]
+2026-08-30T21:25:40.035897+02:00 aralrez-Victus-HP sshd[16501]: PAM 2 more authentication failures; logname= uid=0 euid=0 tty=ssh ruser= rhost=192.168.122.121  user=aralrez
+2026-08-30T21:29:17.351482+02:00 aralrez-Victus-HP sshd[16781]: Received disconnect from 192.168.122.121 port 37324:11: disconnected by user
+2026-08-30T21:29:17.351789+02:00 aralrez-Victus-HP sshd[16781]: Disconnected from user aralrez 192.168.122.121 port 37324
+2026-08-30T21:29:17.352680+02:00 aralrez-Victus-HP sshd[16708]: pam_unix(sshd:session): session closed for user aralrez
+2026-08-30T21:29:17.359861+02:00 aralrez-Victus-HP systemd-logind[863]: Session 9 logged out. Waiting for processes to exit.
+2026-08-30T21:29:17.361020+02:00 aralrez-Victus-HP systemd-logind[863]: Removed session 9.
+2026-08-30T21:29:31.521911+02:00 aralrez-Victus-HP sshd[17392]: Received disconnect from 192.168.122.121 port 58150:11: Bye Bye [preauth]
+2026-08-30T21:29:31.522100+02:00 aralrez-Victus-HP sshd[17392]: Disconnected from authenticating user aralrez 192.168.122.121 port 58150 [preauth]
+2026-08-30T21:29:31.802569+02:00 aralrez-Victus-HP sshd[17394]: pam_unix(sshd:auth): authentication failure; logname= uid=0 euid=0 tty=ssh ruser= rhost=192.168.122.121  user=aralrez
+2026-08-30T21:29:33.611585+02:00 aralrez-Victus-HP sshd[17394]: Failed password for aralrez from 192.168.122.121 port 46096 ssh2
+2026-08-30T21:29:47.227078+02:00 aralrez-Victus-HP sshd[17394]: message repeated 2 times: [ Failed password for aralrez from 192.168.122.121 port 46096 ssh2]
+2026-08-30T21:30:01.775301+02:00 aralrez-Victus-HP CRON[17429]: pam_unix(cron:session): session opened for user root(uid=0) by root(uid=0)
+2026-08-30T21:30:01.777937+02:00 aralrez-Victus-HP CRON[17429]: pam_unix(cron:session): session closed for user root
+2026-08-30T21:30:21.374613+02:00 aralrez-Victus-HP sshd[17394]: Failed password for aralrez from 192.168.122.121 port 46096 ssh2
+2026-08-30T21:30:21.480450+02:00 aralrez-Victus-HP sshd[17394]: Connection closed by authenticating user aralrez 192.168.122.121 port 46096 [preauth]
+2026-08-30T21:30:21.480788+02:00 aralrez-Victus-HP sshd[17394]: PAM 3 more authentication failures; logname= uid=0 euid=0 tty=ssh ruser= rhost=192.168.122.121  user=aralrez
+2026-08-30T21:30:21.480897+02:00 aralrez-Victus-HP sshd[17394]: PAM service(sshd) ignoring max retries; 4 > 3
+2026-08-30T21:30:28.722770+02:00 aralrez-Victus-HP sshd[17455]: Accepted password for aralrez from 192.168.122.121 port 46918 ssh2
+2026-08-30T21:30:28.726077+02:00 aralrez-Victus-HP sshd[17455]: pam_unix(sshd:session): session opened for user aralrez(uid=1000) by aralrez(uid=0)
+2026-08-30T21:30:28.733363+02:00 aralrez-Victus-HP systemd-logind[863]: New session 11 of user aralrez.
+2026-08-30T21:35:01.787816+02:00 aralrez-Victus-HP CRON[18097]: pam_unix(cron:session): session opened for user root(uid=0) by root(uid=0)
+2026-08-30T21:35:01.802327+02:00 aralrez-Victus-HP CRON[18097]: pam_unix(cron:session): session closed for user root
+2026-08-30T21:36:43.409531+02:00 aralrez-Victus-HP sudo:  aralrez : TTY=pts/3 ; PWD=/home/aralrez/Wazuh-SOC-Lab ; USER=root ; COMMAND=/usr/bin/tail -n 100 /var/log/auth.log
+2026-08-30T21:36:43.410778+02:00 aralrez-Victus-HP sudo: pam_unix(sudo:session): session opened for user root(uid=0) by aralrez(uid=1000)

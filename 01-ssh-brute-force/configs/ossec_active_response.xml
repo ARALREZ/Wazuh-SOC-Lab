@@ -1,0 +1,18 @@
+<!-- Remember add your agent and manager to white_list if u dind't do it yet -->
+<ossec_config>
+
+    <update_check>yes</update_check>
+    <white_list>127.0.0.1</white_list>
+    <white_list>^localhost.localdomain$</white_list>
+    <white_list>192.168.122.X</white_list>
+    <white_list>192.168.122.X</white_list>
+  </global>
+
+<!-- Active Response Configuration linked to Custom Rule 100001 -->
+  <active-response>
+    <command>firewall-drop</command>
+    <location>local</location>
+    <rules_id>100001</rules_id>
+    <timeout>600</timeout>
+  </active-response>
+</ossec_config>

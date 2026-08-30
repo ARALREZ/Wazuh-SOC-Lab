@@ -1,0 +1,26 @@
+<group name="syslog,sshd,custom_detection,">
+
+  <!-- Custom Rule 100001: SSH Brute Force Detection -->
+  <rule id="100001" level="10">
+    <if_matched_sid>5760</if_matched_sid>
+    <same_source_ip />
+    <frequency>4</frequency>
+    <timeframe>120</timeframe>
+    <description>CUSTOM DETECT: SSH Brute Force attack detected from $(srcip)</description>
+    <mitre>
+      <id>T1110.001</id> <!-- Password Guessing -->
+    </mitre>
+  </rule>
+
+<!-- Custom Rule 100010: Successful Login Following Brute Force -->
+  <rule id="100010" level="14">
+    <if_sid>5715</if_sid>
+    <if_matched_sid>100001</if_matched_sid>
+    <same_source_ip />
+    <description>CRITICAL: Successful SSH Authentication Following Brute Force Attack from $(srcip)!</description>
+    <mitre>
+      <id>T1110.001</id>
+      <id>T1078</id>
+    </mitre>
+  </rule>
+</group>

