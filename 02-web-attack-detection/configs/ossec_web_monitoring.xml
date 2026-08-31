@@ -1,0 +1,14 @@
+<!-- Check on your /var/ossec/etc/ossec.conf -->
+<localfile>
+  <log_format>apache</log_format>
+  <location>/var/log/apache2/access.log</location>
+</localfile>
+
+
+<!-- Active Response configuration for Web Attacks -->
+<active-response>
+  <command>firewall-drop</command>
+  <location>local</location>
+  <rules_id>100021,100022</rules_id>
+  <timeout>600</timeout>
+</active-response>
