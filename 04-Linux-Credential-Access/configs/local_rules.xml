@@ -1,0 +1,12 @@
+<!-- Custom Auditd Rule for Credential Access -->
+<group name="local,syslog,sshd,">
+  <rule id="100040" level="10">
+    <if_sid>80700</if_sid>
+    <field name="audit.key">shadow_access</field>
+    <field name="audit.res">failed</field>
+    <description>Auditd: Unauthorized failed attempt to access /etc/shadow by user $(audit.auid)</description>
+    <mitre>
+      <id>T1003.008</id>
+    </mitre>
+  </rule>
+</group>

@@ -1,0 +1,21 @@
+cat << 'EOF' > ~/Wazuh-SOC-Lab/04-Linux-Credential-Access/what_need
+# --- STEP 1: Auditd Subsystem Setup ---
+sudo apt update && sudo apt install auditd iptables-persistent -y
+
+# --- STEP 2: Configure Auditd Rules ---
+# Edit /etc/audit/rules.d/audit.rules and add:
+# -a always,exit -F path=/etc/shadow -F perm=rwa -F auid>=1000 -F auid!=4294967295 -F exe!=/usr/bin/sudo -F exe!=/usr/bin/su -F exe!=/usr/bin/passwd -k shadow_access
+
+# Load new rules into kernel
+sudo augenrules --load
+
+# --- STEP 3: Deploy Active Response Script ---
+chmod +x scripts/block-attacker.sh
+sudo cp scripts/block-attacker.sh /var/ossec/active-response/bin/
+sudo chown root:wazuh /var/ossec/active-response/bin/block-attacker.sh
+sudo chmod 755 /var/ossec/active-response/bin/block-attacker.sh
+
+# --- STEP 4: Restart Services ---
+sudo systemctl restart wazuh-agent
+sudo systemctl restart wazuh-manager
+EOF
