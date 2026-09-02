@@ -50,6 +50,7 @@ Binds Rule 100030 to a local account locking script:
 ```
 
 ## 📁 Repository Structure 
+```text
 03-automated-account-lockout/
 ├── artifacts/
 │   └── active_responses.log     # Proof of executed account lockout
@@ -61,3 +62,4 @@ Binds Rule 100030 to a local account locking script:
 ├── scripts/
 │   └── account-lockout.sh       # Script invoking passwd -l $(dstuser)
 └── README.md                    # Scenario documentation
+```
