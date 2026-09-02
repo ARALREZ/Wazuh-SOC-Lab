@@ -1,19 +1,19 @@
 # Scenario 01: SSH Brute Force Detection, Account Compromise & Automated Response (XDR)
 
-📌 Executive Summary
+## 📌 Executive Summary
 This project demonstrates an end-to-end SOC scenario simulating an SSH Brute Force attack followed by account compromise. It covers custom detection engineering in Wazuh SIEM, automated active response (IP containment), and correlation of credential stuffing events aligned with the MITRE ATT&CK framework.
 
-📐 Network & Lab Architecture
+## 📐 Network & Lab Architecture
 - SIEM / XDR Manager: Wazuh Manager 4.x (Ubuntu Server)
 - Target Endpoint (Victim): Ubuntu Linux Desktop + Wazuh Agent (Ubuntu Laptop)
 - Attacker Host: Kali Linux
 
-🔍 MITRE ATT&CK Mapping
+## 🔍 MITRE ATT&CK Mapping
 - Tactic: Credential Access (TA0006), Initial Access (TA0001)
 - Technique: Brute Force: Password Guessing (T1110.001)
 - Technique: Valid Accounts (T1078)
 
-⚙️ Custom Detection Rules & Active Response
+## ⚙️ Custom Detection Rules & Active Response
 
 1. Custom Rules Configuration (configs/local_rules.xml)
 Two custom rules were engineered to address visibility gaps in default configurations:
