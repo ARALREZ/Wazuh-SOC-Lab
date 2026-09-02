@@ -1,26 +1,30 @@
-# Project 04: Linux Credential Access & Automated Response
+# Scenario 04: Linux Credential Access Detection, Kernel Auditing & Automated Response (XDR)
 
-📌 Executive Summary
-This project demonstrates an end-to-end SOC scenario simulating an unauthorized Linux Credential Access attack (/etc/shadow access attempt). It covers kernel-level telemetry using auditd, custom detection engineering in Wazuh SIEM tuned for false-positive reduction, and automated active response (user account lockout & permanent IP containment via iptables) aligned with the MITRE ATT&CK framework.
+## 📌 Executive Summary
+This project demonstrates an end-to-end SOC scenario simulating an unauthorized Linux Credential Access attack (`/etc/shadow` access attempt). It covers kernel-level telemetry using `auditd`, custom detection engineering in Wazuh SIEM tuned for false-positive reduction, and automated active response (user account lockout & permanent IP containment via `iptables`) aligned with the MITRE ATT&CK framework.
 
-📐 Network & Lab Architecture
+## 📐 Network & Lab Architecture
 - SIEM / XDR Manager: Wazuh Manager 4.x (Ubuntu Server)
-- Target Endpoint (Victim): Ubuntu Linux Desktop + Wazuh Agent + auditd (Ubuntu Laptop)
+- Target Endpoint (Victim): Ubuntu Linux Desktop + Wazuh Agent + `auditd` (Ubuntu Laptop)
 - Attacker Host: Kali Linux
 
-🔍 MITRE ATT&CK Mapping
+## 🔍 MITRE ATT&CK Mapping
 - Tactic: Credential Access (TA0006)
 - Technique: OS Credential Dumping: /etc/passwd and /etc/shadow (T1003.008)
 
-⚙️ Custom Detection Rules & Active Response
+## ⚙️ Custom Detection Rules & Active Response
 
 1. Kernel Audit Configuration (/etc/audit/rules.d/audit.rules)
 To capture privilege escalation and credential access attempts at the system call level while filtering authorization noise (e.g., sudo, su):
+
+```bash
 -a always,exit -F path=/etc/shadow -F perm=rwa -F auid>=1000 -F auid!=4294967295 -F exe!=/usr/bin/sudo -F exe!=/usr/bin/su -F exe!=/usr/bin/passwd -k shadow_access
+```
 
 2. Custom Detection Rule Configuration (configs/local_rules.xml)
 Custom rule engineered to detect unauthorized failed access attempts to system credential files:
 
+```xml
 <group name="local,syslog,sshd,">
 
   <!-- Custom Auditd Rule for Credential Access -->
@@ -35,10 +39,12 @@ Custom rule engineered to detect unauthorized failed access attempts to system c
   </rule>
 
 </group>
+```
 
 3. Active Response Configuration (configs/ossec.conf)
 Binds detection Rule 100040 directly to an automated SOAR remediation script:
 
+```xml
 <!-- Active Response Command Definition -->
 <command>
   <name>block-attacker-script</name>
@@ -52,14 +58,10 @@ Binds detection Rule 100040 directly to an automated SOAR remediation script:
   <location>local</location>
   <rules_id>100040</rules_id>
 </active-response>
+```
 
-4. SOAR Script Execution (scripts/block-attacker.sh)
-The active response script executes immediately upon detection:
-- Account Lockout: Locks the non-privileged attacker user account (passwd -l).
-- Network Containment: Appends a permanent drop rule to iptables and saves it via netfilter-persistent.
-- Whitelist Safeguards: Prevents locking administrative accounts (root, aralrez) or blocking loopback interfaces (127.0.0.1).
+## 📁 Repository Structure
 
-📁 Repository Structure
 ```text
 04-Linux-Credential-Access/
 ├── artifacts/
@@ -74,3 +76,4 @@ The active response script executes immediately upon detection:
 │   └── block-attacker.sh        # SOAR enforcement script
 ├── README.md                    # Scenario documentation
 └── what_need                    # Deployment commands cheat-sheet
+```
