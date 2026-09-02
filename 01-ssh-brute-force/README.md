@@ -60,15 +60,19 @@ Automatically triggers firewall containment upon detecting rule 100001 or 100010
 </active-response>
 ```
 
-📁 Repository Structure
-01-ssh-brute-force/
-├── artifacts/
-│   └── active_response.log      # Log proof of automated enforcement
-├── configs/
-│   ├── local_rules.xml          # Custom detection & correlation rules
-│   └── ossec.conf               # Active response configuration snippet
-├── docs/
-│   └── screenshots/             # Verification evidence & dashboard alerts
-├── scripts/
-│   └── brute_force_sim.sh       # Controlled attack simulation script
-└── README.md                    # Scenario documentation
+## 📁 Repository Structure
+
+```text
+Wazuh-SOC-Lab/
+├── README.md                           # Main repository overview (This file)
+├── 01-ssh-brute-force/                 # Scenario 01: SSH Brute Force & Containment
+├── 02-web-attack-detection/            # Scenario 02: Web Attack Detection (SQLi/XSS)
+├── 03-file-integrity-monitoring/       # Scenario 03: File Integrity Monitoring (FIM)
+├── 04-Linux-Credential-Access/         # Scenario 04: Kernel Auditing, Credential Access & Active Response
+│   ├── artifacts/                      # Execution logs & verification proof
+│   ├── configs/                        # local_rules.xml & ossec.conf snippets
+│   ├── docs/screenshots/               # Dashboard alerts & verification evidence
+│   ├── scripts/                        # SOAR enforcement script (block-attacker.sh)
+│   ├── README.md                       # Detailed scenario guide & playbook
+│   └── what_need                       # Deployment cheat-sheet
+└── 05-virustotal-integration/          # Scenario 05: Malware Analysis & VirusTotal Integra
