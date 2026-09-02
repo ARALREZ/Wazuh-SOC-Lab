@@ -68,6 +68,7 @@ Binds detection rules directly to automated IP blocking:
 </active-response>
 ```
 ## 📁 Repository Structure
+```text
 02-web-attack-detection/
 ├── artifacts/
 │   └── apache_alerts.json       # Log samples of intercepted web attacks
@@ -77,3 +78,4 @@ Binds detection rules directly to automated IP blocking:
 ├── docs/
 │   └── screenshots/             # Screenshots of Nikto/SQLi/XSS alerts
 └── README.md                    # Scenario documentation
+```text
