@@ -49,15 +49,15 @@ Binds Rule 100030 to a local account locking script:
 </active-response>
 ```
 
-## 📁 Repository Structure
+## 📁 Repository Structure 
 03-automated-account-lockout/
 ├── artifacts/
 │   └── active_responses.log     # Proof of executed account lockout
 ├── configs/
 │   ├── local_rules.xml          # Detection rule 100030
 │   └── ossec.conf               # Active Response binding config
-├── scripts/
-│   └── account-lockout.sh       # Script invoking passwd -l $(dstuser)
 ├── docs/
 │   └── screenshots/             # Dashboard evidence & account status proof
+├── scripts/
+│   └── account-lockout.sh       # Script invoking passwd -l $(dstuser)
 └── README.md                    # Scenario documentation
