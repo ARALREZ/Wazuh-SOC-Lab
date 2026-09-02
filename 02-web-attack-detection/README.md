@@ -1,19 +1,19 @@
 # Scenario 02: Web Attack Detection, Reconnaissance & Automated Response (XDR)
 
-📌 Executive Summary
+## 📌 Executive Summary
 This project demonstrates an end-to-end SOC scenario simulating web application attacks against an Apache2 web server (Web Reconnaissance, SQL Injection, and Cross-Site Scripting). It covers custom detection engineering in Wazuh SIEM using pattern and group matching, real-time HTTP log decoding, and automated active response (IP containment via firewall-drop) aligned with the MITRE ATT&CK framework.
 
-📐 Network & Lab Architecture
+## 📐 Network & Lab Architecture
 - SIEM / XDR Manager: Wazuh Manager 4.x (Ubuntu Server - moj-server)
 - Target Endpoint (Victim / Web Server): Apache2 Web Server + Wazuh Agent (Ubuntu Laptop - My_Agent)
 - Attacker Host: Kali Linux (192.168.122.121)
 
-🔍 MITRE ATT&CK Mapping
+## 🔍 MITRE ATT&CK Mapping
 - Tactic: Reconnaissance (TA0043), Initial Access (TA0001)
 - Technique: Active Scanning: Vulnerability Scanning (T1595.002)
 - Technique: Exploit Public-Facing Application (T1190)
 
-⚙️ Custom Detection Rules & Active Response
+## ⚙️ Custom Detection Rules & Active Response
 
 1. Custom Rules Configuration (configs/local_rules.xml)
 Three custom rules were engineered to analyze Apache access logs (`/var/log/apache2/access.log`) and detect web threat vectors:
@@ -67,8 +67,7 @@ Binds detection rules directly to automated IP blocking:
   <timeout>300</timeout>
 </active-response>
 ```
-
-📁 Repository Structure
+## 📁 Repository Structure
 02-web-attack-detection/
 ├── artifacts/
 │   └── apache_alerts.json       # Log samples of intercepted web attacks
