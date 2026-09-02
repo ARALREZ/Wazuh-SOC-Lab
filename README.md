@@ -18,7 +18,7 @@ A hands-on Security Operations Center (SOC) and Extended Detection and Response 
 | :--- | :--- | :--- | :---: |
 | **01** | [SSH Brute Force & Compromise](./01-ssh-brute-force) | Custom XML Rules, Correlation (Level 14), Active Response (IP Drop), MITRE T1110.001 | 🟢 Completed |
 | **02** | [Web Attack Detection (SQLi/XSS)](./02-web-attack-detection) | Web Application Security, Log Analysis, Custom Decoders | 🟢 Completed |
-| **03** | [File Integrity Monitoring (FIM)](./03-fim-integrity-monitoring) | Syscheck Engine, System File Tampering, Escalation Detection | 🟡 Planned |
+| **03** | [File Integrity Monitoring (FIM)](./03-fim-integrity-monitoring) | Syscheck Engine, System File Tampering, Escalation Detection | 🟢 Completed |
 
 ---
 
