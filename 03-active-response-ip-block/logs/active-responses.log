@@ -1,7 +1,0 @@
-2026/08/27 13:09:27 active-response/bin/firewall-drop: Starting
-2026/08/27 13:09:27 active-response/bin/firewall-drop: {"version":1,"origin":{"name":"node01","module":"wazuh-execd"},"command":"delete","parameters":{"alert":{"rule":{"level":10,"description":"Multiple web server 400 error codes from same source ip.","id":"31151"},"agent":{"id":"001","name":"moj_agent","ip":"192.168.122.1"},"data":{"protocol":"GET","srcip":"192.168.122.121"}},"program":"active-response/bin/firewall-drop"}}
-2026/08/27 13:09:27 active-response/bin/firewall-drop: Ended
-
-2026/08/27 15:17:40 active-response/bin/firewall-drop: Starting
-2026/08/27 15:17:40 active-response/bin/firewall-drop: {"version":1,"origin":{"name":"node01","module":"wazuh-execd"},"command":"add","parameters":{"alert":{"rule":{"level":10,"description":"Multiple authentication failures.","id":"40111"},"agent":{"id":"001","name":"moj_agent","ip":"192.168.122.1"},"data":{"srcip":"192.168.122.121","dstuser":"root"}},"program":"active-response/bin/firewall-drop"}}
-2026/08/27 15:17:40 active-response/bin/firewall-drop: Ended

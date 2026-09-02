@@ -1,23 +1,32 @@
-# Project 03: Automated IP Containment via Wazuh Active Response
+cat << 'EOF' > ~/Wazuh-SOC-Lab/03-active-response-ip-block/README.md
+# Scenario 03: Automated Account Lockout & Active Response (XDR)
 
 ## 📌 Executive Summary
-This project implements an automated incident response (**SOAR / Active Response**) workflow within a Wazuh SIEM/EDR environment. By leveraging Wazuh's `active-response` engine, the system automatically detects high-severity brute-force attacks (SSH & Web directory enumeration) originated from Kali Linux and mitigates the threat in real-time by dynamically blocking the attacker's IP address on the target host's firewall (`iptables`).
+This project demonstrates an automated XDR containment scenario designed to detect and block unauthorized privilege escalation attempts (`sudo`) on Linux endpoints. Using Wazuh SIEM/XDR, custom correlation rules match authentication failures, extract event metadata (`srcuser`), and invoke an active response Bash script to cryptographically lock the compromised user account at the PAM layer (`/etc/shadow`) in real time.
+
+## 📐 Network & Lab Architecture
+* **SIEM / XDR Manager:** Wazuh Manager 4.x (`moj-server` - Ubuntu Server)
+* **Target Endpoint (Victim):** Wazuh Agent (`My_Agent` / `aralrez-Victus-HP` - Ubuntu Laptop)
+* **Attacker Account:** Local unprivileged account (`attacker`)
+
+## 🔍 MITRE ATT&CK Mapping
+* **Tactic:** Privilege Escalation (TA0004), Defense Evasion (TA0005)
+* **Technique:** Sudo and Sudo Caching (T1548.003)
 
 ---
 
-## 🏗 Architecture & Feedback Loop
+## ⚙️ Custom Detection Rules & Active Response
 
-The automated response operates in a closed-loop security architecture:
+### 1. Custom Rules Configuration (`configs/local_rules.xml`)
+Analyzes local PAM/sudo authentication logs (`/var/log/auth.log`) to catch unauthorized `sudo` executions (wrong password or user not in sudoers):
 
-```text
-[ Attacker (Kali Linux) ] 
-        │ 
-        │ (1) SSH / Web Brute-Force Attack
-        ▼ 
-[ Target Host (Wazuh Agent) ] ────(2) Syslog / Auth Logs────► [ Wazuh Manager ]
-        ▲                                                          │
-        │                                                          │ (3) Rule Match (Level 10+)
-        │                                                          │     (Rules: 100001, 100021, 40111)
-        │                                                          ▼
-        └──────────────(4) Encrypted AR Command: ──────────────────┘
-                            firewall-drop (Add IP to iptables)
+```xml
+<group name="syslog,sudo,custom_response,">
+  <rule id="100030" level="12">
+    <if_sid>5404, 5405, 5407</if_sid>
+    <description>CUSTOM DETECT: Unauthorized sudo attempt (Wrong Password or Not in Sudoers) - Triggering Account Lockout</description>
+    <mitre>
+      <id>T1548.003</id>
+    </mitre>
+  </rule>
+</group>

@@ -1,0 +1,16 @@
+<!-- Custom Command for User Lockout Script -->
+<!-- Put that on the last <command> block line-->
+  <command>
+    <name>custom-user-lock</name>
+    <executable>custom-user-lock.sh</executable>
+    <expect>srcuser</expect> <!-- Crucial for payload delivery -->
+    <timeout_allowed>yes</timeout_allowed>
+  </command>
+
+<!-- Active Response: Lock user on multiple failed sudo attempts -->
+  <active-response>
+    <command>custom-user-lock</command>
+    <location>local</location>
+    <rules_id>100030</rules_id>
+    <timeout>120</timeout> <!-- Lockout duration before calling the 'delete' action -->
+  </active-response>

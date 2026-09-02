@@ -1,0 +1,10 @@
+<!-- Scenario 03: Custom Active Response (User Lockout) -->
+<group name="syslog,sudo,custom_response,">
+  <rule id="100030" level="12">
+    <if_sid>5404, 5405, 5407</if_sid>
+    <description>CUSTOM DETECT: Unauthorized sudo attempt (Wrong Password or Not in Sudoers) - Triggering Account Lockout</description>
+    <mitre>
+      <id>T1548.003</id>
+    </mitre>
+  </rule>
+</group>

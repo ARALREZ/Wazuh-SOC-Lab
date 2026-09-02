@@ -1,0 +1,26 @@
+{
+  "timestamp": "2026-09-02T07:07:32.815+0000",
+  "rule": {
+    "level": 12,
+    "description": "CUSTOM DETECT: Unauthorized sudo attempt (Wrong Password or Not in Sudoers) - Triggering Account Lockout",
+    "id": "100030",
+    "mitre": {
+      "id": ["T1548.003"],
+      "tactic": ["Privilege Escalation", "Defense Evasion"],
+      "technique": ["Sudo and Sudo Caching"]
+    },
+    "groups": ["syslog", "sudo", "custom_response"]
+  },
+  "agent": {
+    "id": "002",
+    "name": "My_Agent",
+    "ip": "192.168.122.1"
+  },
+  "full_log": "2026-09-02T09:07:32.616791+02:00 aralrez-Victus-HP sudo: attacker : user NOT in sudoers ; TTY=pts/0 ; PWD=/home/attacker ; USER=root ; COMMAND=/usr/bin/ls /root",
+  "data": {
+    "srcuser": "attacker",
+    "dstuser": "root",
+    "tty": "pts/0",
+    "command": "/usr/bin/ls /root"
+  }
+}
