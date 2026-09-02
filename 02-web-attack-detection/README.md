@@ -1,4 +1,3 @@
-cat << 'EOF' > ~/Wazuh-SOC-Lab/02-web-attack-detection/README.md
 # Scenario 02: Web Attack Detection, Reconnaissance & Automated Response (XDR)
 
 ## 📌 Executive Summary
