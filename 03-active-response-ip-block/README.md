@@ -1,4 +1,3 @@
-cat << 'EOF' > ~/Wazuh-SOC-Lab/03-active-response-ip-block/README.md
 # Scenario 03: Automated Account Lockout & Active Response (XDR)
 
 ## 📌 Executive Summary
