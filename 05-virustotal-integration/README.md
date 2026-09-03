@@ -6,17 +6,17 @@ This project demonstrates an end-to-end SOC scenario simulating an automated mal
 
 ## 📐 Network & Lab Architecture
 
-    SIEM / XDR Manager: Wazuh Manager 4.x (Ubuntu Server)
+SIEM / XDR Manager: Wazuh Manager 4.x (Ubuntu Server)
 
-    Target Endpoint (Victim): Ubuntu Linux Desktop + Wazuh Agent (Ubuntu Laptop)
+Target Endpoint (Victim): Ubuntu Linux Desktop + Wazuh Agent (Ubuntu Laptop)
 
-    Attacker Host: Kali Linux / Local Attacker Session
+Attacker Host: Kali Linux / Local Attacker Session
 
 ## 🔍 MITRE ATT&CK Mapping
 
-    Tactic: Execution (TA0002)
+Tactic: Execution (TA0002)
 
-    Technique: User Execution: Malicious File (T1204.002)
+Technique: User Execution: Malicious File (T1204.002)
 
 ## ⚙️ Custom Detection Rules & Active Response
 
