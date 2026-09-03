@@ -1,0 +1,64 @@
+# ==============================================================================
+# LAB 05: CHEAT-SHEET DEPLOYMENT & TESTING COMMANDS
+# ==============================================================================
+
+# ------------------------------------------------------------------------------
+# 1. WAZUH MANAGER SETUP
+# ------------------------------------------------------------------------------
+
+# Edit Wazuh Manager configuration (Add VirusTotal integration & Active Response)
+sudo nano /var/ossec/etc/ossec.conf
+
+# Edit custom rules file (Add Rule 100050)
+sudo nano /var/ossec/etc/rules/local_rules.xml
+
+# Verify Manager configuration syntax
+sudo /var/ossec/bin/wazuh-analysisd -t
+
+# Restart Wazuh Manager
+sudo systemctl restart wazuh-manager
+
+# Verify VirusTotal integration logs on Manager
+sudo cat /var/ossec/logs/integrations.log
+sudo grep -a -i "virustotal" /var/ossec/logs/ossec.log | tail -n 20
+
+
+# ------------------------------------------------------------------------------
+# 2. WAZUH AGENT SETUP
+# ------------------------------------------------------------------------------
+
+# Configure real-time FIM for Downloads directory in Agent config
+sudo nano /var/ossec/etc/ossec.conf
+# Add line: <directories realtime="yes" check_all="yes">/home/attacker/Downloads</directories>
+
+# Deploy Active Response script
+sudo cp scripts/host-isolate.sh /var/ossec/active-response/bin/
+sudo chmod 750 /var/ossec/active-response/bin/host-isolate.sh
+sudo chown root:wazuh /var/ossec/active-response/bin/host-isolate.sh
+
+# Restart Wazuh Agent
+sudo systemctl restart wazuh-agent
+
+
+# ------------------------------------------------------------------------------
+# 3. ATTACK SIMULATION & TESTING
+# ------------------------------------------------------------------------------
+
+# Switch to target user and download EICAR test payload
+su - USER
+cd ~/Downloads
+curl -O https://secure.eicar.org/eicar.com.txt
+
+
+# ------------------------------------------------------------------------------
+# 4. VERIFICATION & LOG ANALYSIS
+# ------------------------------------------------------------------------------
+
+# Check Active Response execution log on Agent
+sudo cat /var/ossec/logs/active-responses.log
+
+# Verify iptables network isolation rules on Agent
+sudo iptables -L -n -v
+
+# Clear iptables rules manually (if recovery needed)
+sudo iptables -F

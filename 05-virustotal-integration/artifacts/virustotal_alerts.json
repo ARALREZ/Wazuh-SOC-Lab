@@ -1,0 +1,47 @@
+{
+  "timestamp": "2026-09-03T12:34:20.200+0200",
+  "rule": {
+    "level": 13,
+    "description": "CUSTOM DETECT: VirusTotal flagged malicious payload (/home/attacker/Downloads/eicar.com.txt) - Triggering Automated Host Isolation!",
+    "id": "100050",
+    "mitre": {
+      "id": [
+        "T1204.002"
+      ],
+      "tactic": [
+        "Execution"
+      ],
+      "technique": [
+        "User Execution: Malicious File"
+      ]
+    },
+    "firedtimes": 1,
+    "mail": false,
+    "groups": [
+      "virustotal",
+      "custom_malware"
+    ]
+  },
+  "agent": {
+    "id": "002",
+    "name": "My_Agent",
+    "ip": "192.168.122.100"
+  },
+  "manager": {
+    "name": "moj-server"
+  },
+  "id": "1788163195.161950",
+  "data": {
+    "virustotal": {
+      "found": 1,
+      "malicious": 62,
+      "permalink": "https://www.virustotal.com/gui/file/275a021bbfb6489e54d471899f7db9d1663fc695ec2fe2a2c4538aabf651fd0f",
+      "source": {
+        "file": "/home/attacker/Downloads/eicar.com.txt",
+        "md5": "44d370122e47d2e40c451264e323952a",
+        "sha1": "3395856ce81f2b7382dee72602f798b642f14140"
+      }
+    }
+  },
+  "location": "virustotal"
+}

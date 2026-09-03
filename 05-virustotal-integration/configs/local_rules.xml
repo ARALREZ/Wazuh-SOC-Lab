@@ -1,0 +1,12 @@
+<group name="virustotal,custom_malware,">
+
+  <!-- Custom Rule for VirusTotal Positive Detection & SOAR Trigger -->
+  <rule id="100050" level="13">
+    <if_sid>87105</if_sid>
+    <description>CUSTOM DETECT: VirusTotal flagged malicious payload ($(virustotal.source.file)) - Triggering Automated Host Isolation!</description>
+    <mitre>
+      <id>T1204.002</id>
+    </mitre>
+  </rule>
+
+</group>
