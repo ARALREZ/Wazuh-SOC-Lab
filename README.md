@@ -20,7 +20,7 @@ A hands-on Security Operations Center (SOC) and Extended Detection and Response 
 | **02** | **Web Attack Detection (SQLi/XSS)** | Web Application Security, Log Analysis, Custom Decoders, MITRE T1190 | 🟢 Completed |
 | **03** | **File Integrity Monitoring (FIM)** | Syscheck Engine, System File Tampering, Escalation Detection, MITRE T1565.001 | 🟢 Completed |
 | **04** | **Linux Credential Access & SOAR Response** | Kernel Auditing (`auditd`), Custom Detection (Tuning & FP Reduction), Account Lockout & Permanent IP Block, MITRE T1003.008 | 🟢 Completed |
-| **05** | **Threat Intel & VirusTotal Integration** | FIM Active Trigger, VirusTotal API, Automated File Quarantine & Removal, MITRE T1204 | 🟡 Next Module |
+| **05** | **Threat Intel & VirusTotal Integration** | FIM Active Trigger, VirusTotal API, Automated File Quarantine & Removal, MITRE T1204 | 🟢 Completed |
 
 ---
 
