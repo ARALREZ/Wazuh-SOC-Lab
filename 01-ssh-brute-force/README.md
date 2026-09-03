@@ -62,17 +62,19 @@ Automatically triggers firewall containment upon detecting rule 100001 or 100010
 
 ## 📁 Repository Structure
 
+📁 **Repository Structure**
+
 ```text
-Wazuh-SOC-Lab/
-├── README.md                           # Main repository overview (This file)
-├── 01-ssh-brute-force/                 # Scenario 01: SSH Brute Force & Containment
-├── 02-web-attack-detection/            # Scenario 02: Web Attack Detection (SQLi/XSS)
-├── 03-file-integrity-monitoring/       # Scenario 03: File Integrity Monitoring (FIM)
-├── 04-Linux-Credential-Access/         # Scenario 04: Kernel Auditing, Credential Access & Active Response
-│   ├── artifacts/                      # Execution logs & verification proof
-│   ├── configs/                        # local_rules.xml & ossec.conf snippets
-│   ├── docs/screenshots/               # Dashboard alerts & verification evidence
-│   ├── scripts/                        # SOAR enforcement script (block-attacker.sh)
-│   ├── README.md                       # Detailed scenario guide & playbook
-│   └── what_need                       # Deployment cheat-sheet
-└── 05-virustotal-integration/          # Scenario 05: Malware Analysis & VirusTotal Integra
+01-ssh-brute-force/
+├── artifacts/
+│   └── active_responses.log     # Log proof of SSH brute-force detection & IP drop
+├── configs/
+│   ├── local_rules.xml          # Custom detection rules for SSH authentication failures
+│   └── ossec.conf               # Active Response & SSH monitoring configuration
+├── docs/
+│   └── screenshots/
+│       └── ssh_brute_force_alert.png # Dashboard evidence & blocked IP alert
+├── scripts/
+│   └── firewall-drop.sh         # SOAR containment script (iptables IP block)
+├── README.md                    # Scenario documentation & playbook
+└── what_need                    # Deployment commands cheat-sheet
