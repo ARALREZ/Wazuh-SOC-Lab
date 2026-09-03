@@ -1,4 +1,3 @@
-cat << 'EOF' > ~/Wazuh-SOC-Lab/04-Linux-Credential-Access/what_need
 # --- STEP 1: Auditd Subsystem Setup ---
 sudo apt update && sudo apt install auditd iptables-persistent -y
 
