@@ -78,4 +78,4 @@ Binds detection rules directly to automated IP blocking:
 ├── docs/
 │   └── screenshots/             # Screenshots of Nikto/SQLi/XSS alerts
 └── README.md                    # Scenario documentation
-```text
+```
