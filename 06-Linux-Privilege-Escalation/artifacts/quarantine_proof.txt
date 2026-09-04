@@ -1,0 +1,5 @@
+=== File Permissions ===
+-rwxrwxr-x 1 aralrez aralrez 56 Sep  4 21:44 /tmp/linpeas.sh
+
+=== File Attributes (Immutable Flag) ===
+--------------e------- /tmp/linpeas.sh

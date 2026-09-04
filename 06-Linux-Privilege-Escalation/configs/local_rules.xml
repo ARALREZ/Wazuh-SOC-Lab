@@ -1,0 +1,33 @@
+<!-- 
+  ==============================================================================
+  Wazuh Custom Detection Rules: Linux Privilege Escalation & Active Response
+  Author: ARALREZ 
+  Repository: Wazuh-SOC-Lab
+  ==============================================================================
+-->
+
+<group name="linux, privesc, quarantine">
+
+  <!-- Rule 100060: Detect Sudo GTFOBins Exploitation (find -exec) -->
+  <rule id="100060" level="12">
+    <if_sid>5402,5403</if_sid>
+    <match>COMMAND=/usr/bin/find . -exec</match>
+    <description>PrivEsc Alert: Using GTFOBins (find -exec) to hijack root!</description>
+    <mitre>
+      <id>TA0004</id><!-- Privilege Escalation -->
+      <id>T1548.003</id><!-- Sudo and Sudo Caching -->
+    </mitre>
+  </rule>
+
+  <!-- Rule 100061: Detect Malicious PrivEsc Scripts via FIM (Syscheck) -->
+  <rule id="100061" level="12">
+    <if_group>syscheck</if_group>
+    <match>linpeas.sh|exploit.sh|privesc.sh</match>
+    <description>Active Response Trigger: Privilege escalation enumeration script detected on host.</description>
+    <mitre>
+      <id>TA0004</id> <!-- Privilege Escalation -->
+      <id>T1059.004</id> <!-- Command and Scripting Interpreter: Unix Shell -->
+    </mitre>
+  </rule>
+
+</group>

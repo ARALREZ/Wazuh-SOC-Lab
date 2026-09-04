@@ -1,0 +1,21 @@
+cat << 'EOF' > what_need
+# DEPLOYMENT CHEAT-SHEET
+
+## 1. On Wazuh Manager (Ubuntu Server)
+*   Append the contents of `configs/local_rules.xml` to `/var/ossec/etc/rules/local_rules.xml`.
+*   Append the Active Response block from `configs/ossec.conf` to `/var/ossec/etc/ossec.conf`.
+*   Restart service: `sudo systemctl restart wazuh-manager`
+
+## 2. On Wazuh Agent (Ubuntu Laptop)
+*   Ensure `jq` is installed: `sudo apt-get install jq -y`
+*   Copy `scripts/quarantine_file.sh` to `/var/ossec/active-response/bin/`
+*   Set permissions: 
+    `sudo chmod 755 /var/ossec/active-response/bin/quarantine_file.sh`
+    `sudo chown root:wazuh /var/ossec/active-response/bin/quarantine_file.sh`
+*   Ensure `/tmp` is monitored in the agent's `ossec.conf` via `<syscheck>`.
+*   Create Sudo vulnerability for testing: `echo "attacker ALL=(ALL) NOPASSWD: /usr/bin/find" | sudo tee /etc/sudoers.d/attacker-gtfobins`
+*   Restart service: `sudo systemctl restart wazuh-agent`
+
+## 3. Execution
+Run `scripts/privesc_sim.sh` as the unprivileged user on the Agent machine.
+EOF
