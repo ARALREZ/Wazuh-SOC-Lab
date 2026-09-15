@@ -1,0 +1,41 @@
+<!-- 
+  ==============================================================================
+  Wazuh Custom Detection Rules: Suricata NIDS & Active Response Integration
+  Author: ARALREZ 
+  Repository: Wazuh-SOC-Lab
+  ==============================================================================
+-->
+
+<group name="web,appsec,custom_web_detection,">
+  <!-- Rule 100020: Web Reconnaissance / Vulnerability Scanner -->
+  <rule id="100020" level="8">
+    <if_group>web</if_group>
+    <regex>Nikto|sqlmap|nmap|acunetix</regex>
+    <description>CUSTOM DETECT: Automated Web Vulnerability Scanner Detected</description>
+    <mitre>
+      <id>T1595.002</id>
+    </mitre>
+  </rule>
+
+  <!-- Rule 100070: Intense Web Scanning Correlation -->
+  <rule id="100070" level="10" frequency="5" timeframe="60">
+    <if_matched_sid>100020</if_matched_sid>
+    <same_source_ip />
+    <description>CUSTOM DETECT: Automatyczny skaner wyzwolony wielokrotnie z tego samego IP. Możliwy atak.</description>
+    <mitre>
+      <id>T1595.002</id>
+    </mitre>
+  </rule>
+</group>
+
+<group name="suricata,custom_network,">
+  <!-- Rule 100071: Suricata Network Scan Correlation -->
+  <rule id="100071" level="10" frequency="15" timeframe="60">
+    <if_matched_sid>86601</if_matched_sid>
+    <same_source_ip />
+    <description>CUSTOM DETECT: Massive TCP anomalies detected from a single IP (Possible Nmap Stealth Scan). Suricata is correlating the traffic.</description>
+    <mitre>
+      <id>T1046</id>
+    </mitre>
+  </rule>
+</group>

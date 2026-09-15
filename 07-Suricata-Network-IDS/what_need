@@ -1,0 +1,20 @@
+# DEPLOYMENT CHEAT-SHEET: Suricata & Wazuh Integration
+
+## 1. Prerequisites (Ubuntu Server/Agent)
+*   Install Suricata: `sudo add-apt-repository ppa:oisf/suricata-stable`, `sudo apt update`, `sudo apt install suricata jq -y`
+*   Ensure Suricata is outputting EVE JSON logs to `/var/log/suricata/eve.json`.
+*   Start Suricata: `sudo systemctl restart suricata`
+
+## 2. On Wazuh Manager
+*   Append the contents of `configs/local_rules.xml` to `/var/ossec/etc/rules/local_rules.xml`.
+*   Append the Active Response and `<localfile>` block from `configs/ossec.conf` to `/var/ossec/etc/ossec.conf`.
+*   Restart service: `sudo systemctl restart wazuh-manager`
+
+## 3. On Wazuh Agent (Target Machine)
+*   Copy `scripts/custom-block.sh` to `/var/ossec/active-response/bin/`
+*   Set permissions: 
+    `sudo chmod 750 /var/ossec/active-response/bin/custom-block.sh`
+    `sudo chown root:wazuh /var/ossec/active-response/bin/custom-block.sh`
+
+## 4. Execution
+Run `scripts/attack_sim.sh` from an external attacker machine (e.g., Kali Linux) targeting the Agent. Verify the block using `sudo iptables -L INPUT -v -n`.
