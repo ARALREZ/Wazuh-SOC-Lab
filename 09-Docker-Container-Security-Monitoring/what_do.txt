@@ -1,0 +1,16 @@
+Wazuh SOC Lab - 09 Docker Container Security Monitoring
+
+Description:
+Automated detection and quarantine of malicious and privileged Docker containers using Wazuh Active Response.
+
+Test Commands (Attacker):
+1. Test Rule 100090 (Unauthorized container name / socket mount):
+   docker run -d --name malicious_miner_test ubuntu sleep infinity
+
+2. Test Rule 100091 (Privileged container execution):
+   docker run -d --name privileged_test_container ubuntu sleep infinity
+
+Verification Steps:
+- Containers are automatically terminated (SIGKILL) and renamed to QUARANTINED_<container_name>_<timestamp>.
+- Check Active Response logs: sudo tail -f /var/ossec/logs/active-responses.log
+- Verify running containers: docker ps -a

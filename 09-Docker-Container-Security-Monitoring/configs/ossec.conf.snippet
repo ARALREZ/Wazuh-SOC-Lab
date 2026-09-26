@@ -1,0 +1,20 @@
+<!-- Agent Configuration (Docker event listener) -->
+<wodle name="docker-listener">
+  <interval>10m</interval>
+  <attempts>5</attempts>
+  <run_on_start>yes</run_on_start>
+  <disabled>no</disabled>
+</wodle>
+
+<!-- Manager Configuration (/var/ossec/etc/ossec.conf) -->
+<command>
+  <name>docker-quarantine</name>
+  <executable>docker_quarantine.py</executable>
+  <timeout_allowed>no</timeout_allowed>
+</command>
+
+<active-response>
+  <command>docker-quarantine</command>
+  <location>local</location>
+  <rules_id>100090,100091</rules_id>
+</active-response>

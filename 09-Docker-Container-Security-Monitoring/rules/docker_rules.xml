@@ -1,0 +1,21 @@
+<group name="docker, container_security,">
+  <!-- Rule 100090: Detection of unauthorized container names or socket mounts -->
+  <rule id="100090" level="12">
+    <if_sid>87901,87903</if_sid>
+    <regex>malicious_miner|docker\.sock</regex>
+    <description>DevSecOps: Unauthorized container name or docker.sock mount detected.</description>
+    <mitre>
+      <id>T1611</id>
+    </mitre>
+  </rule>
+
+  <!-- Rule 100091: Detection of privileged execution mode -->
+  <rule id="100091" level="12">
+    <if_sid>87901,87903</if_sid>
+    <regex>privileged|Privileged</regex>
+    <description>DevSecOps: Privileged container started (Privileged mode).</description>
+    <mitre>
+      <id>T1611</id>
+    </mitre>
+  </rule>
+</group>
