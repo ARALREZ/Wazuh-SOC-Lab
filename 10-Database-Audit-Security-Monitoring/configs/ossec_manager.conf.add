@@ -1,0 +1,16 @@
+<!-- Manager configuration for Active Response execution -->
+<ossec_config>
+  <command>
+    <name>block-attacker</name>
+    <executable>block_attacker_ip.sh</executable>
+    <expect>srcip</expect>
+    <timeout_allowed>yes</timeout_allowed>
+  </command>
+
+  <active-response>
+    <command>block-attacker</command>
+    <location>local</location>
+    <rules_id>100100</rules_id>
+    <timeout>60</timeout>
+  </active-response>
+</ossec_config>

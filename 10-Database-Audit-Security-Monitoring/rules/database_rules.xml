@@ -1,0 +1,28 @@
+<group name="postgresql,database,security">  
+  <!-- Base rule for PostgreSQL audit logs -->
+  <rule id="100102" level="3">
+    <decoded_as>postgresql-audit</decoded_as>
+    <description>PostgreSQL: Audit event recorded.</description>
+  </rule>
+
+  <!-- Rule for DDL / Schema Modification -->
+  <rule id="100100" level="10">
+    <if_sid>100102</if_sid>
+    <match>DDL</match>
+    <description>PostgreSQL: Potential DDL / Schema Modification detected.</description>
+    <mitre>
+      <id>T1485</id>
+      <id>T1078</id>
+    </mitre>
+  </rule>
+
+  <!-- Rule for SELECT Data Access -->
+  <rule id="100101" level="6">
+    <if_sid>100102</if_sid>
+    <match>SELECT</match>
+    <description>PostgreSQL: Data Access (SELECT) query executed on database table.</description>
+    <mitre>
+      <id>T1213</id>
+    </mitre>
+  </rule>
+</group>

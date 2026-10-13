@@ -1,0 +1,9 @@
+# 10-Database-Audit-Security-Monitoring - Requirements and Objectives
+
+## Scenario Objectives:
+1. Installation and configuration of PostgreSQL 16 and the pgaudit extension on Ubuntu.
+2. Deployment of Wazuh Manager and Wazuh Agent via Docker/Native packages.
+3. Configuration of the Wazuh Agent to monitor PostgreSQL text audit logs (`stderr`).
+4. Preparation of custom Wazuh detection rules (detecting DDL queries - level 10, and SELECT queries - level 6).
+5. Implementation of the Active Response mechanism (automatic blocking of attacking IPs from Kali Linux using iptables while preserving Wazuh agent connectivity).
+6. Execution of attack and query simulations from Kali Linux and validation in Wazuh Dashboard.

@@ -1,0 +1,8 @@
+<!-- Agent configuration to monitor PostgreSQL audit logs -->
+<ossec_config>
+  <localfile>
+    <log_format>syslog</log_format>
+    <location>/var/lib/postgresql/16/main/log/*.log</location>
+  </localfile>
+</ossec_config>
+
