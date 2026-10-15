@@ -1,0 +1,19 @@
+# Secrets and credentials
+credentials.json
+*service-account*.json
+*service_account*.json
+*.pem
+*.key
+.env
+.env.*
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+
+# Temporary files and local output
+*.tmp
+*.swp
+.DS_Store

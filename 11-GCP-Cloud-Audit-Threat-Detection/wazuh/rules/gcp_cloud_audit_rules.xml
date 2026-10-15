@@ -1,0 +1,10 @@
+<group name="google_cloud,audit,">
+
+  <rule id="100110" level="5">
+    <decoded_as>json</decoded_as>
+    <field name="protoPayload.methodName">^SetIamPolicy$</field>
+    <description>Google Cloud Audit: IAM policy change detected</description>
+    <group>google_cloud_iam,</group>
+  </rule>
+
+</group>
