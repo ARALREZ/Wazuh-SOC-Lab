@@ -14,17 +14,20 @@ A hands-on Security Operations Center (SOC) and Extended Detection and Response 
 
 ## 🎯 Project Modules & Attack Scenarios
 
+
 | ID | Scenario Name | Focus Areas | MITRE ATT&CK | Status |
-| :--- | :--- | :--- | :--- | :--- |
+| --- | --- | --- | --- | --- |
 | **01** | **SSH Brute Force & Compromise** | Custom XML Rules, Correlation (Level 14), Active Response (IP Drop) | T1110.001 | 🟢 Completed |
 | **02** | **Web Attack Detection (SQLi/XSS)** | Web Application Security, Log Analysis, Custom Decoders | T1190 | 🟢 Completed |
 | **03** | **File Integrity Monitoring (FIM)** | Syscheck Engine, System File Tampering, Escalation Detection | T1565.001 | 🟢 Completed |
-| **04** | **Linux Credential Access & SOAR** | Kernel Auditing (`auditd`), Custom Detection Tuning, Account Lockout & Permanent IP Block | T1003.008 | 🟢 Completed |
+| **04** | **Linux Credential Access & SOAR** | Kernel Auditing (`auditd`), Custom Detection Tuning, Account Lockout & IP Blocking | T1003.008 | 🟢 Completed |
 | **05** | **Threat Intel & VirusTotal** | FIM Active Trigger, VirusTotal API Integration, Automated Host Isolation | T1204.002 | 🟢 Completed |
 | **06** | **Linux Privilege Escalation** | SUID Execution Tracking, Kernel Exploitation Monitoring, Auditd Syscall Correlation | T1548 / T1068 | 🟢 Completed |
-| **07** | **Suricata NIDS & Active Response** | Network Intrusion Detection (NIDS), Eve JSON Telemetry Parsing, Automatic Traffic Drop | T1071 / T1595 | 🟢 Completed |
-| **08** | **YARA Automated Malware Quarantine** | Real-time Payload Scanning, File Permission Neutralization (`chmod 000`), Automated SOAR Containment | T1204.002 / T1059 | 🟢 Completed |
-| **09** | **Docker Container Security Monitoring** | `docker-listener` Integration, Privileged Container Execution, Container Escape Attempts (`docker.sock`) | T1611 / T1609 | 🟡 Planned |
+| **07** | **Suricata NIDS & Active Response** | Network Intrusion Detection, EVE JSON Telemetry, Automatic Traffic Drop | T1071 / T1595 | 🟢 Completed |
+| **08** | **YARA Automated Malware Quarantine** | Real-time File Scanning, YARA Rules, Automated Quarantine and Containment | T1204.002 / T1059 | 🟢 Completed |
+| **09** | **Docker Container Security Monitoring** | Docker Listener, Container Telemetry, Privileged Execution and Suspicious Docker Socket Activity | T1611 / T1609 | 🟡 Planned |
+| **10** | **Database Audit Security Monitoring** | PostgreSQL Audit Logging, Database Activity Monitoring, Wazuh Integration and Security Event Analysis | — | 🟢 Implemented |
+| **11** | **GCP Cloud Audit & IAM Threat Detection** | Google Cloud Audit Logs, Pub/Sub Ingestion, `SetIamPolicy` Detection, Custom Wazuh Rule and Regression Tests | — | 🟢 Validated |
 
 ---
 
@@ -36,26 +39,27 @@ A hands-on Security Operations Center (SOC) and Extended Detection and Response 
 - **Automated Containment (SOAR):** BASH enforcement scripting (`ossec.conf`) for automated malware isolation, file permission neutralization (`000`), user account locking (`passwd -l`), and firewall bans (`iptables`).
 - **Cloud & Container Security:** DevSecOps monitoring using Wazuh `docker-listener` to monitor daemon socket interactions and container breakout attempts.
 - **Threat Hunting & Incident Response:** Deep investigation of raw logs (`/var/log/audit/audit.log`, `/var/ossec/logs/active-responses.log`, `alerts.json`) mapped directly to MITRE ATT&CK Tactics & Techniques.
+- **Database Security:** PostgreSQL audit logging, database activity monitoring, and investigation of database security events.
+- **Cloud Security Monitoring:** Google Cloud Audit Logs, Pub/Sub event ingestion, IAM policy-change detection (`SetIamPolicy`), and custom Wazuh detection rules.
+
+
 
 ---
 
 ## 📁 Repository Structure
 
 ```text
+
 Wazuh-SOC-Lab/
 ├── README.md                                # Main repository overview
-├── 01-ssh-brute-force/                      # Scenario 01: SSH Brute Force & Containment
-├── 02-web-attack-detection/                 # Scenario 02: Web Attack Detection (SQLi/XSS)
-├── 03-active-response-ip-block/             # Scenario 03: File Integrity Monitoring (FIM)
-├── 04-Linux-Credential-Access/              # Scenario 04: Kernel Auditing, Credential Access & SOAR
-├── 05-virustotal-integration/               # Scenario 05: Malware Analysis & VirusTotal Integration
-├── 06-Linux-Privilege-Escalation/           # Scenario 06: Privilege Escalation & Auditd Telemetry
-├── 07-Suricata-Network-IDS/                 # Scenario 07: Suricata NIDS Integration & Network AR
-├── 08-YARA-Automated-Malware-Quarantine/    # Scenario 08: YARA Scanning & Automated File Isolation
-│   ├── configs/                             # Custom rules & ossec.conf snippets
-│   ├── docs/screenshots/                    # Dashboard alerts & execution proof
-│   ├── scripts/                             # yara-quarantine.sh SOAR script
-│   ├── yara-rules/                          # Custom YARA signature files
-│   ├── README.md                            # Detailed scenario documentation
-│   └── what_do.txt                          # Operational verification guide
-└── 09-Docker-Container-Security-Monitoring/ # Scenario 09: Container Security & Escape Detection
+├── 01-ssh-brute-force/                      # Scenario 01: SSH brute-force detection
+├── 02-web-attack-detection/                 # Scenario 02: Web attack detection
+├── 03-active-response-ip-block/             # Scenario 03: FIM and active response
+├── 04-Linux-Credential-Access/              # Scenario 04: Linux credential access
+├── 05-virustotal-integration/               # Scenario 05: Threat intelligence integration
+├── 06-Linux-Privilege-Escalation/           # Scenario 06: Privilege escalation detection
+├── 07-Suricata-Network-IDS/                 # Scenario 07: Suricata network IDS
+├── 08-YARA-Automated-Malware-Quarantine/    # Scenario 08: YARA malware quarantine
+├── 09-Docker-Container-Security-Monitoring/ # Scenario 09: Docker security monitoring
+├── 10-Database-Audit-Security-Monitoring/   # Scenario 10: PostgreSQL database auditing
+└── 11-GCP-Cloud-Audit-Threat-Detection/     # Scenario 11: GCP Cloud Audit and IAM detection
