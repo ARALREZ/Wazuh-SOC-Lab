@@ -25,9 +25,9 @@ A hands-on Security Operations Center (SOC) and Extended Detection and Response 
 | **06** | **Linux Privilege Escalation** | SUID Execution Tracking, Kernel Exploitation Monitoring, Auditd Syscall Correlation | T1548 / T1068 | 🟢 Completed |
 | **07** | **Suricata NIDS & Active Response** | Network Intrusion Detection, EVE JSON Telemetry, Automatic Traffic Drop | T1071 / T1595 | 🟢 Completed |
 | **08** | **YARA Automated Malware Quarantine** | Real-time File Scanning, YARA Rules, Automated Quarantine and Containment | T1204.002 / T1059 | 🟢 Completed |
-| **09** | **Docker Container Security Monitoring** | Docker Listener, Container Telemetry, Privileged Execution and Suspicious Docker Socket Activity | T1611 / T1609 | 🟡 Planned |
-| **10** | **Database Audit Security Monitoring** | PostgreSQL Audit Logging, Database Activity Monitoring, Wazuh Integration and Security Event Analysis | — | 🟢 Implemented |
-| **11** | **GCP Cloud Audit & IAM Threat Detection** | Google Cloud Audit Logs, Pub/Sub Ingestion, `SetIamPolicy` Detection, Custom Wazuh Rule and Regression Tests | — | 🟢 Validated |
+| **09** | **Docker Container Security Monitoring** | Docker Listener, Container Telemetry, Privileged Execution and Suspicious Docker Socket Activity | T1611 / T1609 | 🟢 Completed  |
+| **10** | **Database Audit Security Monitoring** | PostgreSQL Audit Logging, Database Activity Monitoring, Wazuh Integration and Security Event Analysis | — | 🟢 Completed |
+| **11** | **GCP Cloud Audit & IAM Threat Detection** | Google Cloud Audit Logs, Pub/Sub Ingestion, `SetIamPolicy` Detection, Custom Wazuh Rule and Regression Tests | — | 🟢 Completed |
 
 ---
 
