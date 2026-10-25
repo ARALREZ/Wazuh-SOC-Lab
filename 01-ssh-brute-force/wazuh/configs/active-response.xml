@@ -1,0 +1,20 @@
+<!-- Active Response for SSH Brute Force Lab -->
+
+<ossec_config>
+
+  <!-- White list trusted IPs -->
+  <global>
+    <white_list>127.0.0.1</white_list>
+    <white_list>^localhost.localdomain$</white_list>
+    <white_list>192.168.122.1</white_list>
+  </global>
+
+  <!-- Firewall drop on strong brute-force and critical success-after-brute -->
+  <active-response>
+    <command>firewall-drop</command>
+    <location>local</location>
+    <rules_id>100002,100005</rules_id>
+    <timeout>600</timeout>
+  </active-response>
+
+</ossec_config>

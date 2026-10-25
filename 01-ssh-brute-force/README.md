@@ -1,80 +1,125 @@
-# Scenario 01: SSH Brute Force Detection, Account Compromise & Automated Response (XDR)
+# Scenario 01: SSH Brute Force Detection, Account Compromise & Automated Response
 
 ## 📌 Executive Summary
-This project demonstrates an end-to-end SOC scenario simulating an SSH Brute Force attack followed by account compromise. It covers custom detection engineering in Wazuh SIEM, automated active response (IP containment), and correlation of credential stuffing events aligned with the MITRE ATT&CK framework.
+
+This project demonstrates an end-to-end SOC scenario for detecting SSH brute-force attacks and subsequent successful authentication using Wazuh SIEM/XDR. It includes layered custom detection rules, correlation of failed and successful logins, automated containment via Active Response (firewall-drop), and a trusted-IP whitelist.
+
+The lab covers detection engineering, positive/negative test cases, regression checks, and real attack simulation from Kali Linux against an Ubuntu endpoint protected by a Wazuh Agent.
 
 ## 📐 Network & Lab Architecture
-- SIEM / XDR Manager: Wazuh Manager 4.x (Ubuntu Server)
-- Target Endpoint (Victim): Ubuntu Linux Desktop + Wazuh Agent (Ubuntu Laptop)
-- Attacker Host: Kali Linux
+
+```text
+Attacker:          Kali Linux          192.168.122.112
+Victim / Agent:    Ubunru-Agent        192.168.122.149
+Trusted Host:      Fedora (virbr0)     192.168.122.1
+SIEM / XDR:        Wazuh Manager       192.168.122.178 (my-server)
+```
+
+**Expected event flow:**
+
+```text
+Kali (Hydra)
+      |
+      | SSH failed / successful logins
+      v
+Ubuntu Agent (Wazuh Agent)
+      |
+      | events via 1514/tcp
+      v
+Wazuh Manager
+      |
+      +--> Rule 100001 (soft)
+      +--> Rule 100002 (brute force) --> Active Response (firewall-drop)
+      +--> Rule 100005 (critical success after brute)
+      +--> Rule 100010 (trusted IP - low level only)
+      |
+      v
+Wazuh Dashboard / alerts.json
+```
 
 ## 🔍 MITRE ATT&CK Mapping
-- Tactic: Credential Access (TA0006), Initial Access (TA0001)
-- Technique: Brute Force: Password Guessing (T1110.001)
-- Technique: Valid Accounts (T1078)
 
-## ⚙️ Custom Detection Rules & Active Response
-
-1. Custom Rules Configuration (configs/local_rules.xml)
-Two custom rules were engineered to address visibility gaps in default configurations:
-- Rule 100001 (Level 10): Detects custom SSH Brute Force attempts (4+ failed logins within 120s from the same IP).
-- Rule 100010 (Level 14 - CRITICAL): Correlates successful SSH login events (5715) occurring directly after brute force or multiple failed login attempts from the same source IP.
-
-```xml
-<group name="syslog,sshd,custom_detection,">
-
-  <!-- Custom Rule 100001: SSH Brute Force Detection -->
-  <rule id="100001" level="10">
-    <if_matched_sid>5760</if_matched_sid>
-    <same_source_ip />
-    <frequency>4</frequency>
-    <timeframe>120</timeframe>
-    <description>CUSTOM DETECT: SSH Brute Force attack detected from $(srcip)</description>
-    <mitre>
-      <id>T1110.001</id>
-    </mitre>
-  </rule>
-
-  <!-- Custom Rule 100010: Successful Login Following Brute Force -->
-  <rule id="100010" level="14">
-    <if_sid>5715</if_sid>
-    <if_matched_sid>100001, 5760, 5763</if_matched_sid>
-    <same_source_ip />
-    <description>CRITICAL: Successful SSH Authentication Following Brute Force Attack from $(srcip)!</description>
-    <mitre>
-      <id>T1110.001</id>
-      <id>T1078</id>
-    </mitre>
-  </rule>
-
-</group>
+```text 
+Tactic:     Credential Access (TA0006), Initial Access (TA0001)
+Technique:  Brute Force: Password Guessing (T1110.001)
+Technique:  Valid Accounts (T1078)
 ```
-2. Active Response Configuration (configs/ossec.conf)
-Automatically triggers firewall containment upon detecting rule 100001 or 100010:
-```xml
-<active-response>
-  <command>firewall-drop</command>
-  <location>local</location>
-  <rules_id>100001, 100010</rules_id>
-  <timeout>600</timeout>
-</active-response>
+
+## ⚙️ Custom Detection Rules & Validation
+
+```text
+Custom Rule Configuration:
+/var/ossec/etc/rules/local_rules.xml
+(also stored in wazuh/rules/ssh_brute_force_rules.xml)
+
+Rule 100010 (Level 3):
+  Trusted IP authentication failure (192.168.122.1)
+
+Rule 100001 (Level 6):
+  3 failed SSH attempts within 90 seconds (excluding trusted IP)
+
+Rule 100002 (Level 10):
+  5 failed SSH attempts within 120 seconds → triggers Active Response
+
+Rule 100005 (Level 14 - CRITICAL):
+  Successful SSH login (5715) after recent brute-force activity (100001)
 ```
+
+## 🧪 Detection Test Results
+| Test Case | Input / Condition | Expected Result | Status |
+|---|---|---|---|
+| Soft detection | 3 failed logins from Kali | Rule 100001 (level 6) | PASS |
+| Brute force detection | 5+ failed logins from Kali | Rule 100002 (level 10) + ARP | PASS |
+| Critical correlation | Successful login after brute force | Rule 100005 (level 14) | PASS |
+| Active Response | After rule 100002 | IP blocked in iptables | PASS |
+| Trusted IP | Failed logins from 192.168.122.1 | Rule 100010 (level 3) only | PASS |
+| Negative - single failure | 1-2 failed logins | No 100001/100002 | PASS |
+| Negative - clean success | Normal successful login | Only 5715, no 100005 | PASS |
+
+Tests were performed with real Hydra attacks and live SSH sessions. Rules were validated on Wazuh Manager 4.9.2.
 
 ## 📁 Repository Structure
 
-📁 **Repository Structure**
-
 ```text
 01-ssh-brute-force/
-├── artifacts/
-│   └── active_responses.log     # Log proof of SSH brute-force detection & IP drop
-├── configs/
-│   ├── local_rules.xml          # Custom detection rules for SSH authentication failures
-│   └── ossec.conf               # Active Response & SSH monitoring configuration
-├── docs/
-│   └── screenshots/
-│       └── ssh_brute_force_alert.png # Dashboard evidence & blocked IP alert
+├── architecture/
+│   └── architecture.md
+├── wazuh/
+│   ├── rules/
+│   │   └── ssh_brute_force_rules.xml
+│   └── configs/
+│       └── active-response.xml
+├── tests/
+│   ├── positive/
+│   │   ├── brute-force-4fails.log
+│   │   └── brute-force-success-after.log
+│   ├── negative/
+│   │   ├── normal-failed-login.log
+│   │   └── normal-successful-login.log
+│   └── regression/
+│       └── test_ssh_rules.py
 ├── scripts/
-│   └── firewall-drop.sh         # SOAR containment script (iptables IP block)
-├── README.md                    # Scenario documentation & playbook
-└── what_need                    # Deployment commands cheat-sheet
+│   ├── attack_simulation.sh
+│   └── cleanup_firewall.sh
+├── sample-logs/
+├── evidence/
+├── reports/
+│   └── test-results.md
+└── README.md
+```
+
+## ⚠️ Limitations
+
+- Active Response uses location local (blocks on the Agent only).
+- Correlation window for rule 100005 is time-sensitive; very long delays between brute force and success may miss the critical alert.
+- Whitelist (100010) is based on a single static IP (192.168.122.1).
+- Tests were performed in a lab libvirt network; production tuning of frequency/timeframe may be required.
+- No automatic unblocking notification beyond the standard Active Response delete event.
+
+## 🚀 Next Steps
+
+1. Add more trusted IPs to the whitelist if needed.
+2. Consider adding a server-side Active Response for centralized blocking.
+3. Extend detection to cover key-based authentication failures.
+4. Integrate with SOAR playbooks for automatic ticket creation.
+5. Keep evidence screenshots and test-results.md up to date after any rule changes.
