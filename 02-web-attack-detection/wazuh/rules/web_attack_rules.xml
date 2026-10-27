@@ -1,0 +1,115 @@
+<!-- Custom Web Attack Detection Rules - Scenario 02 -->
+<!-- Rule IDs: 100020 - 100029 -->
+
+<group name="web,appsec,custom_web_detection,">
+
+  <!-- 100020 - Soft: Automated scanner User-Agent -->
+  <rule id="100020" level="6">
+    <if_group>web</if_group>
+    <regex type="pcre2">(?i)(nikto|sqlmap|nmap|acunetix|nessus|openvas|wpscan|dirbuster|gobuster|ffuf|nuclei)</regex>
+    <description>CUSTOM: Soft - Automated web vulnerability scanner detected ($(http_user_agent))</description>
+    <mitre>
+      <id>T1595.002</id>
+    </mitre>
+    <group>web_scanner,reconnaissance,</group>
+  </rule>
+
+  <!-- 100021 - SQL Injection -->
+  <rule id="100021" level="10">
+    <if_sid>31100</if_sid>
+    <regex type="pcre2">(?i)(union\s+select|select\s+.*\s+from|or\s+1\s*=\s*1|' or '1'='1|sleep\(|benchmark\(|waitfor\s+delay|information_schema)</regex>
+    <description>CUSTOM: SQL Injection attempt detected from $(srcip)</description>
+    <mitre>
+      <id>T1190</id>
+    </mitre>
+    <group>sql_injection,web_attack,</group>
+  </rule>
+
+  <!-- 100022 - XSS -->
+  <rule id="100022" level="10">
+    <if_sid>31100</if_sid>
+    <regex type="pcre2">(?i)(%3Cscript%3E|&lt;script&gt;|javascript:|onerror\s*=|onload\s*=|alert\(|document\.cookie|&lt;img\s+src=)</regex>
+    <description>CUSTOM: Cross-Site Scripting (XSS) attempt detected from $(srcip)</description>
+    <mitre>
+      <id>T1190</id>
+    </mitre>
+    <group>xss,web_attack,</group>
+  </rule>
+
+  <!-- 100023 - Path Traversal / LFI -->
+  <rule id="100023" level="10">
+    <if_sid>31100</if_sid>
+    <regex type="pcre2">(?i)(\.\./|\.\.\\|/etc/passwd|/etc/shadow|boot\.ini|win\.ini|%2e%2e%2f)</regex>
+    <description>CUSTOM: Path Traversal / Local File Inclusion attempt from $(srcip)</description>
+    <mitre>
+      <id>T1190</id>
+    </mitre>
+    <group>path_traversal,lfi,web_attack,</group>
+  </rule>
+
+  <!-- 100024 - Command Injection / RCE -->
+  <rule id="100024" level="11">
+    <if_sid>31100</if_sid>
+    <regex type="pcre2">(?i)(;|\||`|\$\(|&&)\s*(cat|ls|id|whoami|uname|wget|curl|nc|bash|sh|python)</regex>
+    <description>CUSTOM: Command Injection / RCE pattern detected from $(srcip)</description>
+    <mitre>
+      <id>T1190</id>
+    </mitre>
+    <group>command_injection,rce,web_attack,</group>
+  </rule>
+
+  <!-- 100025 - Multiple scanner detections (correlation) -->
+  <rule id="100025" level="8" frequency="4" timeframe="120">
+    <if_matched_sid>100020</if_matched_sid>
+    <same_source_ip />
+    <description>CUSTOM: Multiple scanner detections from same IP $(srcip) - possible aggressive reconnaissance</description>
+    <mitre>
+      <id>T1595.002</id>
+    </mitre>
+    <group>web_scanner,correlation,</group>
+  </rule>
+
+  <!-- 100026 - Multiple web attacks from same IP (correlation) -->
+  <rule id="100026" level="12" frequency="3" timeframe="180">
+    <if_matched_group>web_attack</if_matched_group>
+    <same_source_ip />
+    <description>CUSTOM CRITICAL: Multiple web attack techniques from same IP $(srcip) - active exploitation attempt</description>
+    <mitre>
+      <id>T1190</id>
+    </mitre>
+    <group>web_attack,correlation,critical,</group>
+  </rule>
+
+  <!-- 100027 - Attack after previous scanner activity (layered) -->
+  <rule id="100027" level="13" timeframe="300">
+    <if_sid>100021,100022,100023,100024</if_sid>
+    <if_matched_sid>100020</if_matched_sid>
+    <same_source_ip />
+    <description>CUSTOM CRITICAL: Web attack after previous scanner activity from $(srcip)</description>
+    <mitre>
+      <id>T1190</id>
+      <id>T1595.002</id>
+    </mitre>
+    <group>web_attack,correlation,critical,</group>
+  </rule>
+
+  <!-- 100028 - Trusted IP (whitelist) -->
+  <rule id="100028" level="3">
+    <if_group>web</if_group>
+    <srcip>192.168.122.1</srcip>
+    <description>CUSTOM: Web activity from trusted IP $(srcip) - low severity</description>
+    <group>trusted,whitelist,</group>
+  </rule>
+
+  <!-- 100029 - Suspicious patterns -->
+  <rule id="100029" level="5">
+    <if_sid>31100</if_sid>
+    <regex type="pcre2">(?i)(eval\(|base64_decode|php://|data://|expect://)</regex>
+    <description>CUSTOM: Suspicious web request pattern detected from $(srcip)</description>
+    <mitre>
+      <id>T1190</id>
+    </mitre>
+    <group>web_suspicious,</group>
+  </rule>
+
+</group>

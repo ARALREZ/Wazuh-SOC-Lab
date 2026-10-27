@@ -1,0 +1,21 @@
+<!-- Active Response for Web Attacks #ON WAZUH-SERVER -->
+<command>
+  <name>firewall-drop</name>
+  <executable>firewall-drop</executable>
+  <timeout_allowed>yes</timeout_allowed>
+</command>
+
+<active-response>
+  <command>firewall-drop</command>
+  <location>local</location>
+  <rules_id>100021,100022,100023,100024,100026,100027</rules_id>
+  <timeout>600</timeout>
+</active-response>
+
+
+
+<!-- Apache Access Log #ON WAZUH-AGENT-->
+  <localfile>
+    <log_format>apache</log_format>
+    <location>/var/log/apache2/access.log</location>
+  </localfile>
