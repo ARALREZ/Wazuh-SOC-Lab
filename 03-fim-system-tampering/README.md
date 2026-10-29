@@ -74,6 +74,7 @@ Rule 100033 (Level 14 - CRITICAL):
 | Active Response   | After rule 100032 / 100033              | `quarantine-file.sh` executed                 | PASS   |
 | Quarantine proof  | File locked and moved                   | `chattr +i` + file in `/var/ossec/quarantine` | PASS   |
 | Negative - normal | Non-critical file change                | No high-severity alerts                       | PASS   |
+
 Tests were performed with realtime FIM on Ubuntu agent. Rules were validated on Wazuh Manager 4.x.
 
 ## 📁 Repository Structure
