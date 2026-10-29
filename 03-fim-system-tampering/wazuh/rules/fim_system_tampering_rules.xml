@@ -1,0 +1,52 @@
+<!--
+  Scenario 03: File Integrity Monitoring - System File Tampering
+  Rule IDs: 100030 - 100033
+-->
+
+<group name="syscheck,fim,custom,">
+
+  <!-- 100030 - Soft: Modification in system directories -->
+  <rule id="100030" level="7">
+    <if_sid>550,554</if_sid>
+    <field name="file">^/etc/|^/bin/|^/usr/bin/|^/sbin/|^/usr/sbin/</field>
+    <description>FIM Soft: System directory modified - $(file)</description>
+    <mitre>
+      <id>T1565.001</id>
+    </mitre>
+    <group>fim_soft,</group>
+  </rule>
+
+  <!-- 100031 - Medium: Critical system file modified -->
+  <rule id="100031" level="10">
+    <if_sid>550,554</if_sid>
+    <field name="file">/etc/passwd|/etc/shadow|/etc/sudoers|/etc/group|/etc/gshadow|/bin/su|/usr/bin/sudo|/usr/bin/passwd|/etc/ssh/sshd_config</field>
+    <description>FIM Medium: Critical system file modified - $(file)</description>
+    <mitre>
+      <id>T1565.001</id>
+    </mitre>
+    <group>fim_critical,</group>
+  </rule>
+
+  <!-- 100032 - Critical: Triggers Active Response (quarantine) -->
+  <rule id="100032" level="12">
+    <if_sid>100031</if_sid>
+    <description>FIM CRITICAL: Critical file modified - triggering quarantine - $(file)</description>
+    <mitre>
+      <id>T1565.001</id>
+      <id>T1548</id>
+    </mitre>
+    <group>fim_critical,fim_response,</group>
+  </rule>
+
+  <!-- 100033 - Layered: Critical change after previous soft modification -->
+  <rule id="100033" level="14">
+    <if_sid>100032</if_sid>
+    <if_matched_sid>100030</if_matched_sid>
+    <description>FIM LAYERED CRITICAL: Critical change after previous system modification</description>
+    <mitre>
+      <id>T1565.001</id>
+    </mitre>
+    <group>fim_critical,fim_response,</group>
+  </rule>
+
+</group>

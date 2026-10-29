@@ -86,7 +86,6 @@ Rule 100029 (Level 5):
 ```
 
 ## 🧪 Detection Test Results
-Oto tabela przygotowana w czystym formacie tekstowym, dokładnie takim samym jak Twój wzorzec, gotowa do skopiowania (bez znaczników Markdown, które mogłyby utrudniać wklejenie):
 
 | Test Case | Input / Condition | Expected Result | Status |
 | --- | --- | --- | --- |

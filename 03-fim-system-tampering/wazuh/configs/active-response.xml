@@ -1,0 +1,24 @@
+<!-- Active Response configuration for Scenario 03 -->
+
+<command>
+  <name>quarantine-file</name>
+  <executable>quarantine-file.sh</executable>
+  <timeout_allowed>no</timeout_allowed>
+</command>
+
+<active-response>
+  <command>quarantine-file</command>
+  <location>local</location>
+  <rules_id>100032,100033</rules_id>
+</active-response>
+
+
+<!-- ON YOUR AGENT -->
+<syscheck>
+  <disabled>no</disabled>
+  <frequency>300</frequency>
+  <scan_on_start>yes</scan_on_start>
+  <whodata enabled="yes">
+    <restart_whodata>yes</restart_whodata>
+  </whodata>
+</syscheck>

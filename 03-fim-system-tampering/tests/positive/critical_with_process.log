@@ -1,0 +1,4 @@
+Oct 29 11:28:09 Ubunru-Agent syscheck: File '/etc/passwd' modified
+Oct 29 11:28:09 Ubunru-Agent syscheck: Mode: realtime
+Oct 29 11:28:09 Ubunru-Agent syscheck: Changed attributes: permission
+Oct 29 11:28:09 Ubunru-Agent syscheck: Permissions changed from 'rw-r--r--' to '---------'
