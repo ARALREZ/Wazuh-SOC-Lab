@@ -66,14 +66,14 @@ Rule 100033 (Level 14 - CRITICAL):
 
 ## 🧪 Detection Test Results
 
-Test Case,Input / Condition,Expected Result,Status
-Soft detection,Modification of /etc/hosts,Rule 100030 (level 7),PASS
-Critical file,Modification of /etc/passwd,Rule 100031 → 100032,PASS
-Layered detection,Soft change then critical change,Rule 100033 (level 14),PASS
-Active Response,After rule 100032 / 100033,quarantine-file.sh executed,PASS
-Quarantine proof,File locked + moved,chattr +i + file in /var/ossec/quarantine,PASS
-Negative - normal,Non-critical file change,No high severity alert,PASS
-
+| Test Case         | Input / Condition                       | Expected Result                               | Status |
+| ----------------- | --------------------------------------- | --------------------------------------------- | ------ |
+| Soft detection    | Modification of `/etc/hosts`            | Rule 100030 (level 7)                         | PASS   |
+| Critical file     | Modification of `/etc/passwd`           | Rule 100031 → 100032                          | PASS   |
+| Layered detection | Soft change followed by critical change | Rule 100033 (level 14)                        | PASS   |
+| Active Response   | After rule 100032 / 100033              | `quarantine-file.sh` executed                 | PASS   |
+| Quarantine proof  | File locked and moved                   | `chattr +i` + file in `/var/ossec/quarantine` | PASS   |
+| Negative - normal | Non-critical file change                | No high-severity alerts                       | PASS   |
 Tests were performed with realtime FIM on Ubuntu agent. Rules were validated on Wazuh Manager 4.x.
 
 ## 📁 Repository Structure
