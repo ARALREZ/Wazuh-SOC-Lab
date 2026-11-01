@@ -77,14 +77,14 @@ Action:      passwd -l aralrez (lock local lab account)
 
 ## 🧪 Detection Test Results
 
-| Test Case                  | Input / Condition                 | Expected Result                        |
-|----------------------------|-----------------------------------|---------------------------------------|
-| Soft detection             | Single `cat /etc/shadow`          | Rule 100040 (level 7)                 |
-| Multiple attempts          | 3–5 failed reads in short window  | Rule 100041 / 100042                  |
-| Critical + Active Response | Rule 100042 fired                 | `block-attacker.sh` executed          |
-| Containment proof          | After AR                          | `passwd -S` shows account locked (`L`)|
-| Negative - sudo / system   | `sudo` / `passwd` touching shadow | May still match key-based rule (noise)|
-| Cleanup                    | `passwd -u aralrez`               | Account unlocked                      |
+| Test Case                  | Input / Condition                 | Expected Result                       | Status |
+|----------------------------|-----------------------------------|---------------------------------------|--------|
+| Soft detection             | Single `cat /etc/shadow`          | Rule 100040 (level 7)                 | PASS   |
+| Multiple attempts          | 3–5 failed reads in short window  | Rule 100041 / 100042                  | PASS   |
+| Critical + Active Response | Rule 100042 fired                 | `block-attacker.sh` executed          | PASS   |
+| Containment proof          | After AR                          | `passwd -S` shows account locked (`L`)| PASS   |
+| Negative - sudo / system   | `sudo` / `passwd` touching shadow | May still match key-based rule (noise)| PASS   |
+| Cleanup                    | `passwd -u aralrez`               | Account unlocked                      | PASS   |
 
 Tests were performed with auditd + Wazuh Agent on Ubuntu. Rules were validated on Wazuh Manager 4.9.2.
 
