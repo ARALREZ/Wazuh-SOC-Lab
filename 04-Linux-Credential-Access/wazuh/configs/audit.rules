@@ -1,0 +1,5 @@
+## Scenario 04 - Credential Access monitoring
+## Deploy: /etc/audit/rules.d/shadow_access.rules
+## Then: sudo augenrules --load
+
+-a always,exit -F path=/etc/shadow -F perm=rwa -F auid>=1000 -F auid!=-1 -k shadow_access

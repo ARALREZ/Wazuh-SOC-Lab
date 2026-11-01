@@ -1,0 +1,4 @@
+type=SYSCALL msg=audit(1793467890.100:400): arch=c000003e syscall=257 success=yes exit=6 a0=ffffff9c a1=7fff12345678 a2=0 a3=0 items=1 ppid=1000 pid=2000 auid=1000 uid=1000 gid=1000 euid=0 suid=0 fsuid=0 egid=1000 sgid=1000 fsgid=1000 tty=pts0 ses=4 comm="sudo" exe="/usr/bin/sudo" key="shadow_access"
+type=CWD msg=audit(1793467890.100:400): cwd="/home/aralrez"
+type=PATH msg=audit(1793467890.100:400): item=0 name="/etc/shadow" inode=1575487 dev=fd:02 mode=0100640 ouid=0 ogid=42 rdev=00:00 nametype=NORMAL
+type=PROCTITLE msg=audit(1793467890.100:400): proctitle=7375646F00636174002F6574632F736861646F77

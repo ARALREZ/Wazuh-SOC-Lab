@@ -1,0 +1,4 @@
+type=SYSCALL msg=audit(1793467881.256:345): arch=c000003e syscall=257 success=no exit=-13 a0=ffffff9c a1=7ffce7088256 a2=0 a3=0 items=1 ppid=4573 pid=4587 auid=1000 uid=1000 gid=1000 euid=1000 suid=1000 fsuid=1000 egid=1000 sgid=1000 fsgid=1000 tty=pts0 ses=4 comm="cat" exe="/usr/bin/cat" key="shadow_access"
+type=CWD msg=audit(1793467881.256:345): cwd="/home/aralrez"
+type=PATH msg=audit(1793467881.256:345): item=0 name="/etc/shadow" inode=1575487 dev=fd:02 mode=0100640 ouid=0 ogid=42 rdev=00:00 nametype=NORMAL
+type=PROCTITLE msg=audit(1793467881.256:345): proctitle=636174002F6574632F736861646F77

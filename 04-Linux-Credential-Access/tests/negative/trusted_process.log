@@ -1,0 +1,4 @@
+type=SYSCALL msg=audit(1793467900.200:410): arch=c000003e syscall=257 success=yes exit=6 a0=ffffff9c a1=7fffabcdef00 a2=0 a3=0 items=1 ppid=1 pid=500 auid=1000 uid=0 gid=0 euid=0 suid=0 fsuid=0 egid=0 sgid=0 fsgid=0 tty=(none) ses=2 comm="passwd" exe="/usr/bin/passwd" key="shadow_access"
+type=CWD msg=audit(1793467900.200:410): cwd="/"
+type=PATH msg=audit(1793467900.200:410): item=0 name="/etc/shadow" inode=1575487 dev=fd:02 mode=0100640 ouid=0 ogid=42 rdev=00:00 nametype=NORMAL
+type=PROCTITLE msg=audit(1793467900.200:410): proctitle=706173737764002D75006172616C72657A
