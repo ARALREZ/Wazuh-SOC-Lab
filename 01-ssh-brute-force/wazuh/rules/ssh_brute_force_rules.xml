@@ -1,26 +1,32 @@
 <group name="local,syslog,sshd,custom_detection,">
 
-  <!-- Suppress failed SSH authentication alerts from trusted Fedora -->
+  <!-- Trusted Fedora administrator -->
   <rule id="100010" level="3">
     <if_sid>5760</if_sid>
-    <srcip>TRUSTED_ADMIN_IP</srcip>
-    <description>SSH: Authentication failure from trusted administration host $(srcip)</description>
+    <srcip>192.168.122.1</srcip>
+
+    <description>
+      SSH: Failed authentication from trusted administration host $(srcip)
+    </description>
+
     <group>authentication_failed,trusted_source,</group>
   </rule>
 
 
-  <!-- 5 failed logins: medium severity -->
+  <!-- 5 failed logins within 90 seconds -->
   <rule id="100001" level="6"
         frequency="5" timeframe="90" ignore="60">
 
     <if_matched_sid>5760</if_matched_sid>
     <same_srcip />
     <same_user />
-    <srcip negate="yes">TRUSTED_ADMIN_IP</srcip>
+
+    <srcip negate="yes">192.168.122.1</srcip>
 
     <description>
-      SSH: 3 authentication failures for the same account
-      from $(srcip) within 90 seconds
+      SSH BRUTE FORCE WARNING:
+      5 failed authentication attempts for the same account
+      from $(srcip) within 90 seconds.
     </description>
 
     <mitre>
@@ -31,43 +37,51 @@
   </rule>
 
 
-  <!-- 10 failed logins: high severity -->
+  <!-- 8 failed logins within 120 seconds -->
   <rule id="100002" level="10">
     <if_sid>5763</if_sid>
-    <srcip negate="yes">TRUSTED_ADMIN_IP</srcip>
-    <description> SSH BRUTE FORCE: 5 authentication failures for the same account
-      from $(srcip) within 120 seconds
+    <srcip negate="yes">192.168.122.1</srcip>
+
+    <description>
+      SSH BRUTE FORCE:
+      8 or more failed SSH authentications from $(srcip)
+      within 120 seconds.
     </description>
+
     <mitre>
       <id>T1110.001</id>
     </mitre>
+
     <group>authentication_failed,brute_force,</group>
   </rule>
 
 
-  <!-- 8 previous failures followed by successful authentication -->
-<!-- 100005 - Successful SSH login after brute force -->
-  <rule id="100005" level="14" frequency="2" timeframe="300">
+  <!-- Successful login after repeated brute-force alerts -->
+  <rule id="100005" level="14"
+        frequency="2" timeframe="300">
 
-      <if_sid>5715</if_sid>
-      <if_matched_sid>100001</if_matched_sid>
+    <if_sid>5715</if_sid>
+    <if_matched_sid>100001</if_matched_sid>
 
-      <same_srcip />
-      <same_user />
+    <same_srcip />
+    <same_user />
 
-      <srcip negate="yes">TRUSTED_ADMIN_IP</srcip>
-      <description>
-        CRITICAL: Successful SSH authentication following multiple
-      authentication failures for the same account from $(srcip)
-      </description>
+    <srcip negate="yes">192.168.122.1</srcip>
 
-      <mitre>
-          <id>T1110</id>
-          <id>T1078</id>
-          <id>T1021</id>
-      </mitre>
+    <description>
+      CRITICAL: Successful SSH authentication following
+      repeated brute-force alerts for the same account
+      from $(srcip).
+    </description>
 
-      <group>authentication_success,brute_force,possible_compromise,</group>
+    <mitre>
+      <id>T1110.001</id>
+      <id>T1078</id>
+      <id>T1021.004</id>
+    </mitre>
+
+    <group>authentication_success,brute_force,possible_compromise,</group>
 
   </rule>
+
 </group>

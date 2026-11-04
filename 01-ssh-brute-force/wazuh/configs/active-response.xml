@@ -1,12 +1,12 @@
-
 <ossec_config>
 
-  <!-- Trusted IP: never automatically block this source -->
+  <!-- Trusted administrator -->
   <global>
     <white_list>127.0.0.1</white_list>
     <white_list>::1</white_list>
-    <white_list>TRUSTED_ADMIN_IP</white_list>
+    <white_list>192.168.122.1</white_list>
   </global>
+
 
   <!-- SSH brute-force containment -->
   <active-response>
