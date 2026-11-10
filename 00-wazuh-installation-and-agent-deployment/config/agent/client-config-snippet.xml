@@ -1,0 +1,8 @@
+<!-- Reference snippet only. Do not replace the complete ossec.conf with this file. -->
+<client>
+  <server>
+    <address>192.168.122.178</address>
+    <port>1514</port>
+    <protocol>tcp</protocol>
+  </server>
+</client>
