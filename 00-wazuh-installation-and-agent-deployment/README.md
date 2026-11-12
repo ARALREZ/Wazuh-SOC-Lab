@@ -25,7 +25,8 @@ The server also runs a separate Tracecat/Temporal Docker stack. It is outside th
 - `docs/` – deployment procedure, version policy, enrollment and validation guides.
 - `config/` – safe configuration references and examples. Do not store credentials or private keys here.
 - `scripts/` – repeatable package-hold and installed-version verification helpers.
-- `tests/` – controlled SSH detection and FIM validation procedures.
+- `tests/` – deployment, enrollment and baseline validation procedures
+  and FIM checks. Scenario-specifi are in diffrent projects in this repo.
 - `evidence/` – screenshots, sanitized logs and test results.
 
 ## Current status
