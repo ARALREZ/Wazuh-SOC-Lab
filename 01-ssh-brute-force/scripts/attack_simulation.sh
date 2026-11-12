@@ -3,7 +3,8 @@
 # chmod +x scripts/attack_simulation.sh
 
 # export UBUNTU_AGENT_IP=192.168.122.208
-# export SSH_TEST_USER=soc-lab
+#
+# export TEST_USER=${SSH_TEST_USER:-wazuhlab-brute}
 # head -n 3 tests/wordlists/invalid-10.txt > /tmp/wazuh-invalid-prefix.txt
 # ./scripts/attack_simulation.sh /tmp/wazuh-invalid-prefix.txt
 

@@ -169,7 +169,7 @@ SLOW_CASES = [
 def run_logtest(lines, delays):
     # Temporary files avoid stdout/stderr pipe-buffer deadlocks
     # when wazuh-logtest emits output for multiple events.
-    with tempfile.TemporaryFile(mode="w+t") as stdout_file, \\
+    with tempfile.TemporaryFile(mode="w+t") as stdout_file, \
          tempfile.TemporaryFile(mode="w+t") as stderr_file:
 
         proc = subprocess.Popen(
@@ -190,7 +190,7 @@ def run_logtest(lines, delays):
                 if proc.stdin is None:
                     raise RuntimeError("wazuh-logtest stdin is unavailable")
 
-                proc.stdin.write(line + "\\n")
+                proc.stdin.write(line + "\n")
                 proc.stdin.flush()
 
                 if delay:
@@ -220,7 +220,7 @@ def run_logtest(lines, delays):
         stderr = stderr_file.read()
 
         if proc.returncode != 0:
-            raise RuntimeError(stderr + "\\n" + stdout)
+            raise RuntimeError(stderr + "\n" + stdout)
 
         return stdout + stderr
 

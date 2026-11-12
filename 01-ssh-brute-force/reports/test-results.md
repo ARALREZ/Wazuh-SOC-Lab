@@ -21,19 +21,22 @@ Operating system on Manager and Agent: Ubuntu 24.04.5 LTS.
 
 | Check | Result | Notes |
 |---|---|---|
-| Local XML parsing: rules file | PASS | Python XML parser |
-| Local XML parsing: Active Response fragment | PASS | Python XML parser |
-| Local XML parsing: whitelist fragment | PASS | Python XML parser |
-| `wazuh-analysisd -t` | PASS — previous validation | Repeat after final deployment |
-| `wazuh-execd -t` | PASS — previous validation | Repeat after final deployment |
-| Manager/Agent connectivity | ACTIVE — previously confirmed | Re-check before live tests |
+| Rules XML syntax | PASS | Final rules file is stored in `wazuh/rules/ssh_brute_force_rules.xml` |
+| Active Response XML syntax | PASS | Two separate response blocks |
+| `wazuh-analysisd -t` | PASS | Exit code 0 after final rule 100005 update |
+| Manager restart | PASS | `wazuh-manager` returned `active` after restart |
+| Active Response timeout for 100002 | 600 seconds | Deployed Manager configuration |
+| Active Response timeout for 100005 | 600 seconds | Deployed Manager configuration |
+| Manager/Agent connectivity | ACTIVE | Previously confirmed in the lab |
 
-Local XML parsing confirms syntax only. It does not replace validation
-by the Wazuh Manager configuration tools.
+Local XML parsing confirms syntax only. `wazuh-analysisd -t`
+validates the Manager analysis configuration; it does not prove
+Active Response execution.
 
 ## 3. Individual `wazuh-logtest` Results
 
-Previously completed positive synthetic-event tests:
+The following synthetic-event tests were observed during Project 01
+validation. These are rule-matching results, not live SSH tests.
 
 | Scenario | Expected result | Observed result | Status |
 |---|---|---|---|
@@ -41,10 +44,10 @@ Previously completed positive synthetic-event tests:
 | 5 failed SSH passwords | 100001 and 100002 | 100001 on attempt 3; 100002 on attempt 5 | PASS |
 | Trusted source failure | 100010 / level 3 | Trusted rule only | PASS |
 | Failed public-key authentication | 100003 / level 6 | Rule triggered | PASS |
-| 5 different usernames from one IP | 100004 / level 10 | Triggered with 61-second spacing | PASS |
+| 5 different usernames from one IP | 100004 / level 10 | Rule triggered within the 300-second window | PASS |
 | 3 failures followed by successful login | 100001 and 100005 | Both rules triggered | PASS |
 
-### New fixture: 5 failures followed by successful login
+### Five failures followed by successful login
 
 Fixture:
 
@@ -63,72 +66,91 @@ Tested on the Wazuh Manager using `wazuh-logtest` on 2026-11-12.
 
 **Result:** 6/6 event-level results matched expectations.
 
-This is a synthetic-event test. It does not demonstrate a live SSH
-compromise or Active Response execution.
+This is a synthetic-event test. It does not demonstrate a live
+SSH compromise or Active Response execution.
 
 ## 4. Regression Tests
 
-| Run | Result | Interpretation |
+| Suite | Defined cases | Execution status | Result |
+|---|---:|---|---|
+| Fast regression | 17 | PENDING | Must run after fixing and validating the runner |
+| Slow time-window regression | 6 | PENDING | Previous slow run was interrupted; rerun to completion |
+
+The earlier 16/16 result belongs to a historical version of the
+runner. It is not the result of the current 17-case suite.
+
+The test counts describe the current test definitions, not completed
+execution. Do not report 17/17 or 6/6 until the corresponding runs
+finish and the output is reviewed.
+
+## 5. Live SSH Detection Tests
+
+The following live scenarios have been reported as successful in the
+lab. They are separate from `wazuh-logtest` results.
+
+| Rule | Scenario | Live status |
 |---|---|---|
-| Earlier standard runner | 16/16 PASS | Historical baseline before the new sixth-event fixture was added |
-| Updated standard runner | NOT RUN | Must be executed on Manager |
-| Slow regression (`--include-slow`) | INTERRUPTED | Previous run was manually stopped; no complete result |
-| Updated slow regression | NOT RUN | Must be completed on Manager |
+| 100001 | Three failed SSH passwords from Kali | PASS |
+| 100002 | Confirmed SSH brute force from Kali | PASS |
+| 100003 | Failed public-key authentication from Kali | PASS |
+| 100004 | Password spraying from Kali using different accounts | PASS |
+| 100005 | Three failed passwords followed by successful login from Kali | PASS — final rule correction |
+| 100010 | Failed SSH authentication from trusted Fedora source | PASS |
 
-The updated fast runner now contains 17 cases. The slow suite contains
-6 time-window cases. These counts describe the test definitions,
-not completed test results.
-
-## 5. Live Attack Tests
-
-| Scenario | Status |
-|---|---|
-| Live public-key failure from Kali | NOT VERIFIED |
-| Live password spraying from Kali | NOT VERIFIED |
-| Live successful login after brute force | NOT VERIFIED |
-| Live SSH brute-force sequence from Kali | NOT VERIFIED |
-| Trusted Fedora source live test | NOT VERIFIED |
-
-A `wazuh-logtest` result must not be reported as a live attack test.
+For rule 100005, the successful event was recorded by the Agent
+as `Accepted password` and the Manager generated alert `100005`
+at level 14 for the Kali source IP and the lab test user.
 
 ## 6. Active Response and Firewall
 
-| Check | Status |
-|---|---|
-| Separate Manager response block for 100002 | CONFIGURED |
-| Separate Manager response block for 100005 | CONFIGURED |
-| Execution location | `local` |
-| Timeout | 600 seconds |
-| Agent `firewall-drop` script exists | PREVIOUSLY CONFIRMED |
-| Agent Active Response execution log | NOT VERIFIED |
-| Actual firewall rule created for Kali | NOT VERIFIED |
-| Actual SSH traffic from Kali blocked | NOT VERIFIED |
-| Timeout expiration / unblocking | NOT VERIFIED |
+Both Manager response blocks use `firewall-drop`, `location=local`
+and `timeout=600`.
 
-Configuration validation and synthetic rule matching do not prove
-that Active Response executed.
+| Check | Rule 100002 | Rule 100005 |
+|---|---|---|
+| Manager alert | PASS | PASS |
+| Agent execution log `add` | PASS | PASS — operator-confirmed |
+| Actual DROP for Kali source IP | PASS | PASS — operator-confirmed |
+| New TCP/22 connection blocked from Kali | PASS | PASS — operator-confirmed |
+| Automatic `delete` | PASS | PASS — operator-confirmed |
+| TCP/22 reachable again | PASS | PASS — operator-confirmed |
+| Configured timeout | 600 seconds | 600 seconds |
 
-Active Response may only be marked PASS after confirming:
+Historical note: one earlier 100002 cycle recorded approximately
+600 seconds between `add` and `delete`; another earlier cycle used
+60 seconds before the Active Response timeout was changed to 600.
+The final Manager configuration for both rules is 600 seconds.
 
-1. The triggering alert on the Manager.
-2. The corresponding execution entry on the Agent.
-3. The exact firewall chain/rule created for the attacker IP.
-4. A controlled connection attempt demonstrating the block.
-5. The timeout behavior or correct removal of the matching rule.
+The final rule 100005 live test is reported as completing the
+BLOCK / DELETE / SSH-restored cycle. Use the screenshots in the
+evidence directory as the visual record; do not invent timestamps
+that are not visible in the underlying logs.
 
-## 7. Current Overall Assessment
+## 7. Evidence
 
-**Detection engineering:** Core synthetic-event scenarios validated.
+The evidence directory currently contains screenshot files for:
 
-**Regression:** Updated full suite pending.
+- all six custom detection rules,
+- Active Response execution log,
+- actual firewall DROP,
+- blocked connection evidence from Kali.
 
-**Time-window validation:** Incomplete.
+`regression-summary.png` is still pending because the current
+17-case and 6-case suites have not yet been completed.
 
-**Live SSH scenarios:** Not verified.
+See `evidence/README.md` for the file register and review status.
 
-**Active Response enforcement:** Not verified.
+## 8. Current Overall Assessment
 
+**Detection engineering:** six custom rules implemented and live-tested.  
+**Rule 100005:** synthetic PASS and operator-confirmed LIVE PASS.  
+**Active Response:** live BLOCK / DELETE confirmed for 100002 and 100005.  
+**Timeout configuration:** 600 seconds for both response blocks.  
+**Fast regression:** pending, 17 cases.  
+**Slow regression:** pending, 6 cases.  
+**Evidence:** detection and Active Response screenshot files are present; final content review and regression summary remain.  
 **Project status:** IN PROGRESS.
 
-No final completion claim should be made until the missing tests are
-completed and current evidence has been collected.
+Do not mark the project Completed until both regression suites pass,
+the final report and evidence register are reconciled, and the Git diff
+has been reviewed.

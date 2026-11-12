@@ -48,7 +48,10 @@ Expected event-by-event results:
 | 5 | 100002 | 10 |
 | 6 | 100005 | 14 |
 
-The 100005 alert must appear on the successful authentication event.
+Rule 100005 must appear on the successful authentication event.
+Its correlation uses earlier `authentication_failed` events with
+the same source IP and username within 300 seconds. It is not a
+direct `if_matched_sid=100001` dependency.
 
 ## Negative and boundary scenarios
 
