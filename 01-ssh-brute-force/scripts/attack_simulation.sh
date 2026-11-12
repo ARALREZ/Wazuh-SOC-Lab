@@ -2,9 +2,10 @@
 
 # chmod +x scripts/attack_simulation.sh
 
-# export UBUNTU_AGENT_IP=192.168.122.149
+# export UBUNTU_AGENT_IP=192.168.122.208
 # export SSH_TEST_USER=soc-lab
-# ./scripts/attack_simulation.sh tests/wordlists/invalid-3.txt
+# head -n 3 tests/wordlists/invalid-10.txt > /tmp/wazuh-invalid-prefix.txt
+# ./scripts/attack_simulation.sh /tmp/wazuh-invalid-prefix.txt
 
 set -Eeuo pipefail
 
@@ -14,7 +15,7 @@ TEST_USER="${SSH_TEST_USER:-soc-lab}"
 
 WORDLIST="${1:?Usage: ./attack_simulation.sh WORDLIST}"
 
-EXPECTED_VICTIM_IP="${EXPECTED_VICTIM_IP:-192.168.122.149}"
+EXPECTED_VICTIM_IP="${EXPECTED_VICTIM_IP:-192.168.122.208}"
 
 LAB_CIDR="${LAB_CIDR:-192.168.122.0/24}"
 

@@ -1,6 +1,6 @@
-<group name="local,syslog,sshd,custom_detection,">
+<group name="local,syslog,sshd,ssh_brute_force,">
 
-  <!-- Trusted Fedora administrator -->
+  <!-- 100010: Trusted Fedora administrator -->
   <rule id="100010" level="3">
     <if_sid>5760</if_sid>
     <srcip>192.168.122.1</srcip>
@@ -8,43 +8,71 @@
     <group>authentication_failed,trusted_source,</group>
   </rule>
 
-  <!-- Soft detection - matches PNG level 6 -->
+  <!-- 100001: SSH Soft Detection - 3 failures / 120 seconds -->
   <rule id="100001" level="6" frequency="3" timeframe="120">
     <if_matched_sid>5760</if_matched_sid>
     <same_srcip />
     <srcip negate="yes">192.168.122.1</srcip>
-    <description>SSH Multiple authentication failures from $(srcip)</description>
+    <description>SSH Soft Detection: Multiple authentication failures from $(srcip)</description>
     <mitre>
       <id>T1110.001</id>
     </mitre>
-    <group>authentication_failures,ssh_brute_force,</group>
+    <group>authentication_failed,ssh_brute_force,</group>
   </rule>
 
-  <!-- Brute force - matches PNG level 10 + triggers AR -->
-  <rule id="100002" level="10" frequency="5" timeframe="120">
+  <!-- 100002: SSH Brute Force - 5 failures / 120 seconds -->
+  <rule id="100002" level="10" frequency="4" timeframe="120">
     <if_matched_sid>5760</if_matched_sid>
     <same_srcip />
+    <same_user />
     <srcip negate="yes">192.168.122.1</srcip>
-    <description>SSH Brute Force attack detected from $(srcip)</description>
+    <description>SSH Brute Force: Confirmed attack from $(srcip)</description>
     <mitre>
       <id>T1110.001</id>
     </mitre>
     <group>authentication_failed,brute_force,ssh_brute_force,</group>
   </rule>
 
-  <!-- Critical correlation after brute force -->
-  <rule id="100005" level="14" frequency="2" timeframe="300">
-    <if_sid>5715</if_sid>
-    <if_matched_sid>100001</if_matched_sid>
+  <!-- 100003: SSH Public Key Failure -->
+  <rule id="100003" level="6">
+    <if_sid>5716</if_sid>
+    <match>Failed publickey</match>
+    <description>SSH Public Key Authentication Failure from $(srcip)</description>
+    <mitre>
+      <id>T1110.001</id>
+    </mitre>
+    <group>authentication_failed,publickey_failure,ssh,</group>
+  </rule>
+
+  <!-- 100004: SSH Password Spraying - 5 different users / 300 seconds -->
+  <rule id="100004" level="10" frequency="4" timeframe="300">
+    <if_matched_sid>5760</if_matched_sid>
     <same_srcip />
-    <same_user />
+    <different_user />
     <srcip negate="yes">192.168.122.1</srcip>
+    <description>SSH Password Spraying: Multiple accounts targeted from $(srcip)</description>
+    <mitre>
+      <id>T1110.003</id>
+    </mitre>
+    <group>authentication_failed,password_spraying,ssh,</group>
+  </rule>
+
+<!-- 100005: Successful Login After Brute Force -->
+  <rule id="100005" level="14" frequency="3" timeframe="300">
+    <if_sid>5715</if_sid>
+    <if_matched_sid>5760</if_matched_sid>
+    <same_srcip />
+    <same_field>dstuser</same_field>
+    <srcip negate="yes">192.168.122.1</srcip>
+
     <description>CRITICAL: Successful SSH login after brute force from $(srcip)</description>
+
     <mitre>
       <id>T1110.001</id>
       <id>T1078</id>
       <id>T1021.004</id>
     </mitre>
+
     <group>authentication_success,brute_force,possible_compromise,</group>
   </rule>
 

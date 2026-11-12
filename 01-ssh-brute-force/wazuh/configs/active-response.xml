@@ -1,20 +1,22 @@
+
 <ossec_config>
 
-  <!-- Trusted administrator -->
-  <global>
-    <white_list>127.0.0.1</white_list>
-    <white_list>::1</white_list>
-    <white_list>192.168.122.1</white_list>
-  </global>
-
-
-  <!-- SSH brute-force containment -->
+  <!-- Project 01: SSH Brute Force -->
   <active-response>
     <disabled>no</disabled>
     <command>firewall-drop</command>
     <location>local</location>
-    <rules_id>100002,100005</rules_id>
-    <timeout>6000</timeout>
+    <rules_id>100002</rules_id>
+    <timeout>600</timeout>
+  </active-response>
+
+  <!-- Project 01: Successful Login After Brute Force -->
+  <active-response>
+    <disabled>no</disabled>
+    <command>firewall-drop</command>
+    <location>local</location>
+    <rules_id>100005</rules_id>
+    <timeout>600</timeout>
   </active-response>
 
 </ossec_config>

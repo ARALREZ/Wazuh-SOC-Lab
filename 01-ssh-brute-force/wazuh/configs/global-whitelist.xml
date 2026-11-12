@@ -1,0 +1,7 @@
+<!--
+  Project 01 whitelist addition.
+  Add this single entry inside the EXISTING whitelist-containing
+  <global> section on the Manager.
+  Do not replace that section or remove existing default entries.
+-->
+<white_list>192.168.122.1</white_list>
