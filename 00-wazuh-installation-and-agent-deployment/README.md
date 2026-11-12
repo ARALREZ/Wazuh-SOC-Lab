@@ -25,8 +25,10 @@ The server also runs a separate Tracecat/Temporal Docker stack. It is outside th
 - `docs/` – deployment procedure, version policy, enrollment and validation guides.
 - `config/` – safe configuration references and examples. Do not store credentials or private keys here.
 - `scripts/` – repeatable package-hold and installed-version verification helpers.
-- `tests/` – deployment, enrollment and baseline validation procedures
-  and FIM checks. Scenario-specifi are in diffrent projects in this repo.
+- `tests/` – deployment and enrollment validation, SSH event-ingestion
+  smoke tests, and baseline FIM checks. Custom detection and Active
+  Response scenarios are documented in the relevant scenario projects,
+  including [Project 01](../01-ssh-brute-force/README.md).
 - `evidence/` – screenshots, sanitized logs and test results.
 
 ## Current status

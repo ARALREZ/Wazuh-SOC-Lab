@@ -1,6 +1,6 @@
 # SSH Detection Tests
 
-See [the SSH validation procedure](../../docs/06-ssh-brute-force-validation.md).
+See [the SSH validation procedure](../../docs/06-ssh-event-ingestion-smoke-test.md).
 
 Record each test with:
 

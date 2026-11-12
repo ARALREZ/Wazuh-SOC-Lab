@@ -1,8 +1,11 @@
-# SSH Authentication and Brute-Force Detection Test
+# SSH Event Ingestion Smoke Test
 
 ## Objective
 
-Verify that SSH authentication events from `my-agent` are collected by the Wazuh Agent, forwarded to the Manager, and surfaced as alerts in the Dashboard.
+Verify that SSH authentication telemetry from `my-agent` is collected
+by the Wazuh Agent, forwarded to the Manager and visible in Wazuh data.
+
+This procedure validates platform telemetry ingestion only.
 
 ## Safety and scope
 
@@ -65,3 +68,18 @@ After the failed-login test, perform one authorized successful login using the d
 - Corresponding SSH/authentication events are present in Wazuh alert data and can be attributed to `my-agent`.
 - No unrelated host is targeted.
 - Sanitized evidence is saved under `evidence/`.
+
+## Scope boundary
+
+This is a Project 00 infrastructure smoke test.
+
+It does not validate the six custom Project 01 detection rules,
+correlation logic, password spraying, brute-force thresholds or
+Active Response enforcement.
+
+Detailed SSH scenario detection and response testing belongs to
+[Project 01](../../01-ssh-brute-force/README.md).
+
+A visible SSH event or default Wazuh alert is sufficient for the
+ingestion objective. Do not interpret this procedure as proof that
+a custom detection rule or firewall block works.
