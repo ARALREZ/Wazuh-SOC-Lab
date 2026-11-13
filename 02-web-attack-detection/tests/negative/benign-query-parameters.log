@@ -1,0 +1,2 @@
+192.168.122.50 - - [13/Nov/2026:20:21:01 +0000] "GET /search?q=network+security&page=2 HTTP/1.1" 200 1800 "-" "Mozilla/5.0"
+192.168.122.50 - - [13/Nov/2026:20:21:05 +0000] "GET /products?category=books&sort=price&limit=20 HTTP/1.1" 200 2600 "-" "Mozilla/5.0"

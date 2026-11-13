@@ -1,0 +1,2 @@
+192.168.122.1 - - [13/Nov/2026:20:23:01 +0000] "GET / HTTP/1.1" 200 10918 "-" "Mozilla/5.0 (X11; Fedora; Linux x86_64) Firefox/132.0"
+192.168.122.1 - - [13/Nov/2026:20:23:05 +0000] "GET /about.html HTTP/1.1" 200 3200 "-" "Mozilla/5.0 (X11; Fedora; Linux x86_64) Firefox/132.0"
