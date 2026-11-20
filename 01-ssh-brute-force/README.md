@@ -1,6 +1,6 @@
 # Project 01 — SSH Brute Force Detection
 
-**Status:** IN PROGRESS  
+**Status:** DONE
 **Platform:** Wazuh 4.14.10  
 **Last updated:** 2026-11-12
 
