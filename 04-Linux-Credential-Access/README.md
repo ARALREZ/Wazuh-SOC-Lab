@@ -1,151 +1,84 @@
 # Project 04 — Linux Credential Access & Account Password Lockout
 
-**Status: IN PROGRESS**  
-**Platform baseline:** Wazuh 4.14.10-1 (Project 00 is the source of truth for installation, versions and enrollment).  
-**Implementation snapshot:** 2026-11-20  
-**MITRE ATT&CK:** T1003.008 — OS Credential Dumping: /etc/passwd and /etc/shadow
+**Status: COMPLETE — LIVE LAB VALIDATED**  
+**Implementation/evidence snapshot:** 2026-11-20  
+**Platform baseline:** Wazuh `4.14.10-1`; Project 00 remains the source of truth for installation, versions and enrollment.  
+**MITRE ATT&CK:** T1003.008 — OS Credential Dumping: `/etc/passwd` and `/etc/shadow`.
 
-## 1. Overview
+## Overview
 
-Project 04 detects denied attempts to access `/etc/shadow` on the monitored Ubuntu endpoint. Linux Auditd records the relevant syscall with the key `shadow_access`; the Wazuh Agent forwards `/var/log/audit/audit.log` to the Manager; custom rules classify a single denial, repeated denials and a critical sequence.
+Project 04 detects denied attempts to read `/etc/shadow` on the monitored Ubuntu endpoint. Auditd records the syscall with key `shadow_access`; the Wazuh Agent forwards `/var/log/audit/audit.log`; custom rules classify a single denied event, repeated attempts and a critical sequence.
 
-After detection has been verified independently, a stateless Wazuh Active Response will lock **password authentication only** for the dedicated low-privilege account `p04-labuser`. The script must verify the alert rule ID and match `audit.auid` to the UID of that one allow-listed account. It must never lock `aralrez` or an arbitrary account from alert data.
+When rule `100042` is generated for the dedicated lab account, Wazuh Active Response executes `p04-lock-test-account.sh` locally on the endpoint. The script checks the command, rule ID, Agent ID and `audit.auid`, then locks password authentication for the fixed allow-listed account `p04-labuser` only.
 
-## 2. Scope and safety decisions
+**Containment boundary:** `passwd -l` locks password authentication. It does not terminate an existing session and does not by itself guarantee that SSH public-key authentication is disabled. This is an account-specific password lockout, not full account disablement or host isolation.
 
-Included:
-- custom rules `100040–100042` in a dedicated rules file;
-- Auditd monitoring of `/etc/shadow` with key `shadow_access`;
-- collection of `/var/log/audit/audit.log` by the Agent;
-- synthetic rule regression, live SSH/Auditd validation and Active Response validation;
-- a reversible, account-specific cleanup procedure;
-- evidence register, test report, architecture and risk assessment.
-
-Excluded:
-- changes to Project 01–03 detection rules or their existing `firewall-drop` Active Response blocks;
-- replacing `local_rules.xml` or the complete Manager/Agent `ossec.conf`;
-- IP blocking, iptables changes or host isolation;
-- locking the administrator account;
-- automatic unlock through an Active Response `delete` command.
-
-**Important limitation:** `passwd -l p04-labuser` locks password authentication for that account. It does not terminate an already-open session and does not by itself guarantee that public-key SSH authentication is disabled. This project claims a *password lockout of the dedicated test account*, not full endpoint isolation.
-
-## 3. Lab topology
+## Lab topology
 
 | Host | Role | Address |
 |---|---|---|
 | `my-server` | Wazuh Manager, Indexer and Dashboard | `192.168.122.178` |
 | `my-agent` | Ubuntu endpoint, Wazuh Agent ID `001`, Auditd | `192.168.122.208` |
-| `Kali` | Authorized remote SSH test source | `192.168.122.112` |
-| `Fedora` | Administration workstation / repository checkout | host-side `172.16.62.231`; observed trusted VM-side source `192.168.122.1` |
+| Kali | Authorized SSH test source | `192.168.122.112` |
+| Fedora | Administration workstation and repository checkout | `172.16.62.231` |
 
-Project 00 owns the baseline installation, package and enrollment documentation. Do not duplicate or change that baseline from this scenario.
-
-## 4. Detection rules
+## Detection rules
 
 Source: `wazuh/rules/linux_credential_access_rules.xml`  
-Deployed on Manager: `/var/ossec/etc/rules/linux_credential_access_rules.xml`
+Deployed Manager path: `/var/ossec/etc/rules/linux_credential_access_rules.xml`.
 
-| Rule | Level | Purpose |
+| Rule | Level | Detection |
 |---|---:|---|
-| `100040` | 7 | One denied access event: `audit.key=shadow_access` and `audit.success=no`. |
-| `100041` | 10 | Repeated denied events for the same `audit.auid` within 90 seconds. |
-| `100042` | 12 | Critical sequence for the same `audit.auid` within 120 seconds; the observed Wazuh 4.14.10 `wazuh-logtest` behavior is documented below. |
+| `100040` | 7 | One denied event with `audit.key=shadow_access` and `audit.success=no`. |
+| `100041` | 10 | Repeated denied events for the same `audit.auid`, frequency 3 / timeframe 90 seconds. |
+| `100042` | 12 | Critical correlation for the same `audit.auid`, frequency 4 / timeframe 120 seconds. |
 
-### Observed correlation tuning
+The `100042 frequency=4` value is the empirically validated configuration for this lab's Wazuh `4.14.10` rule tree. The supplied regression sequence and live event both produced the critical rule on the fifth denied attempt. Revalidate after changing the parent/child rule logic or Wazuh version; do not treat this tuning as universal for every ruleset.
 
-The first test with `100042 frequency="5"` did not trigger on the fifth input event. In the same sequence, the third event was classified by `100041`, rather than appearing as a normal `100040` Phase 3 result. The rule was then changed to `frequency="4"`; the rerun produced `100042` on the fifth event, while `100041` appeared on the third and `100042` did not appear on the fourth.
+## Auditd and collection
 
-This is an observed, version-specific tuning result for the current lab ruleset. It has passed the supplied synthetic `wazuh-logtest` sequence, but **must still be confirmed with live Auditd events before Active Response is enabled**. Do not silently change the threshold in the report.
+- Auditd watches `/etc/shadow` with key `shadow_access`.
+- Events are collected from `/var/log/audit/audit.log` using one Agent `<localfile>` entry with `log_format=audit`.
+- Exactly one active `shadow_access` rule and one Agent localfile reader were confirmed during implementation; a duplicate Auditd rule encountered during setup was removed.
+- Reference fragments are in `wazuh/configs/audit.rules` and `wazuh/configs/agent-localfile.conf`. Check existing endpoint configuration before adding either; do not duplicate them.
 
-## 5. Auditd and Agent collection
+## Active Response
 
-The endpoint already had one active Auditd rule for `shadow_access`. A second identical rule was briefly added during setup, caused `Rule exists` during `augenrules --load`, and was removed. The original `/etc/audit/rules.d/shadow_access.rules` was preserved. The active rule count was verified as exactly one after reload.
+- Command: `p04-lock-test-account`
+- Executable: `p04-lock-test-account.sh`
+- Execution: `location=local`
+- Trigger: rule `100042` only
+- Timeout: `timeout_allowed=no`; recovery is manual after evidence capture
+- Target: fixed account `p04-labuser` (UID `1008` in the recorded lab run)
 
-The Agent already had exactly one `<localfile>` entry for `/var/log/audit/audit.log` with `log_format=audit`. The following fragment is a reference only; it must not be added again when the existing entry is present:
+The response script accepts only `command=add`, rule ID `100042`, Agent ID `001`, and a numeric AUID equal to the current UID of `p04-labuser` (UID at least 1000). It proceeds only when `passwd -S` reports `P`, verifies the resulting state is `L`, and logs the action. It never accepts an arbitrary username from alert data and does not block source IPs.
 
-```xml
-<localfile>
-  <log_format>audit</log_format>
-  <location>/var/log/audit/audit.log</location>
-</localfile>
-```
+The Manager fragment is `wazuh/configs/manager-active-response.xml`. It is a fragment for insertion into the existing Manager `/var/ossec/etc/ossec.conf`, not a replacement file. Its `<active-response>` block explicitly sets `<disabled>no</disabled>`.
 
-## 6. Active Response policy
+## Validation results
 
-Planned command: `p04-lock-test-account`  
-Planned executable: `p04-lock-test-account.sh`  
-Execution location: `local` (the endpoint associated with the alert)  
-Trigger: rule `100042` only  
-Timeout: disabled (`timeout_allowed=no`); unlock is manual after the test.
+| Validation | Result |
+|---|---|
+| Rule/config validation | `wazuh-analysisd -t`: exit 0 |
+| Active Response config validation | `wazuh-execd -t`: exit 0 |
+| Rule regression | **8/8 PASS, 0 FAIL** |
+| Real SSH session | Kali to `my-agent` as `p04-labuser`; login UID `1008` |
+| Live Manager alert | Rule `100042`, level 12, Agent `my-agent`, AUID `1008`, key `shadow_access`, success `no` |
+| Active Response | Log recorded `LOCKED password authentication for p04-labuser; rule=100042 auid=1008` |
+| Account state after response | `p04-labuser=L`; administrator `aralrez=P` |
+| Recovery | `account-unlocked.png` captured; recovery evidence is included in the evidence register |
 
-The response script must:
-1. read the Wazuh JSON message from STDIN;
-2. accept only the `add` command and rule ID `100042`;
-3. extract `audit.auid` from the alert;
-4. compare it with the current UID of `p04-labuser` (UID must be at least 1000);
-5. lock only that account, and only when its password state is `P`;
-6. skip mismatched AUIDs and already-locked accounts; log every decision.
+`wazuh-logtest` proves rule matching for synthetic input only. Live Auditd ingestion, Manager alert generation and Active Response are recorded separately above.
 
-The response source file in this package is **not deployed**. Active Response remains disabled until the live detection step has passed. See [response policy](architecture/response-policy.md) and [deployment notes](scripts/response/README.md).
+## Evidence
 
-## 7. Validation layers
+See [`evidence/README.md`](evidence/README.md). Screenshots include the 100040, 100041 and 100042 alerts, real SSH login UID, regression summary, Active Response action, locked account and recovered account.
 
-1. XML parsing and `wazuh-analysisd -t` on Manager.
-2. `wazuh-logcollector -t` and `wazuh-agentd -t` on Agent.
-3. Synthetic positive, negative and correlation tests with `wazuh-logtest`.
-4. Different-AUID regression case (still pending at this snapshot).
-5. Live Auditd event from a real SSH login as `p04-labuser` from Kali.
-6. Actual Manager alert verification.
-7. Active Response execution and account-state verification.
-8. Manual cleanup and confirmation that the administrator remains unlocked.
+## Safety notes
 
-A `wazuh-logtest` PASS proves only rule matching for supplied input. It does not prove live log ingestion, live correlation, Active Response execution, password lockout or cleanup.
-
-## 8. Current implementation status
-
-See [Implementation Status — 2026-11-20](reports/implementation-status-2026-11-20.md) for the step-by-step comparison against the 20.11.2026 PDF. See [Test Results](reports/test-results.md) for the actual synthetic test outcomes.
-
-## 9. Repository layout
-
-```text
-04-Linux-Credential-Access/
-├── README.md
-├── architecture/
-│   ├── architecture.md
-│   ├── detection-flow.md
-│   └── response-policy.md
-├── evidence/
-│   └── README.md
-├── reports/
-│   ├── implementation-status-2026-11-20.md
-│   ├── risk-assessment.md
-│   └── test-results.md
-├── sample-logs/
-│   └── audit_sample.log
-├── scripts/
-│   ├── attack_simulation.sh
-│   ├── cleanup_credential.sh
-│   └── response/
-│       ├── README.md
-│       └── p04-lock-test-account.sh
-├── tests/
-│   ├── README.md
-│   ├── boundary/README.md
-│   ├── negative/
-│   ├── positive/
-│   └── regression/
-│       ├── expected-results.md
-│       └── test_credential_rules.py
-└── wazuh/
-    ├── configs/
-    │   ├── agent-localfile.conf
-    │   ├── audit.rules
-    │   └── manager-active-response.xml
-    └── rules/
-        └── linux_credential_access_rules.xml
-```
-
-## 10. Related project
-
-[Project 00 — Wazuh Installation and Agent Deployment](../00-wazuh-installation-and-agent-deployment/README.md)
+- Use only this isolated lab and systems you own or are authorized to test.
+- Run live tests from a genuine SSH login as `p04-labuser`; do not use `sudo -u` because the login AUID may remain the administrator UID.
+- Preserve Projects 01–03 rules and their `firewall-drop` response blocks.
+- Do not add duplicate Auditd rules or duplicate `audit.log` localfile entries.
+- Recovery affects only `p04-labuser`; verify both `p04-labuser=P` and `aralrez=P` after cleanup.
+- Project 00 owns installation and enrollment documentation.

@@ -1,74 +1,63 @@
 # Project 04 — Test Results
 
-**Report date:** 2026-11-20  
-**Project status:** IN PROGRESS  
-**Wazuh baseline:** 4.14.10-1 (Project 00 is the installation baseline)
+**Snapshot:** 2026-11-20 · **Wazuh:** `4.14.10-1`
 
-## 1. Environment
+## Synthetic regression
 
-| Component | Host | Address | Role |
+The Manager regression runner completed **8/8 PASS, 0 FAIL**:
+
+| Scenario | Expected | Observed | Result |
 |---|---|---|---|
-| Wazuh Manager | `my-server` | `192.168.122.178` | Rule analysis and alerts |
-| Wazuh Agent 001 | `my-agent` | `192.168.122.208` | Auditd and log collection |
-| Test source | Kali | `192.168.122.112` | Planned live SSH test source |
+| One denied event | `100040` | `100040` | PASS |
+| Two denied events, same AUID | `100040` | `100040` | PASS |
+| Three denied events, same AUID | `100040`, `100041` | `100040`, `100041` | PASS |
+| Four denied events, same AUID | `100040`, `100041` | `100040`, `100041` | PASS |
+| Five denied events, same AUID | `100040`, `100041`, `100042` | `100040`, `100041`, `100042` | PASS |
+| Five denied events, different AUIDs | `100040` only | `100040` | PASS |
+| Successful access | No custom IDs | None | PASS |
+| Unrelated Auditd key | No custom IDs | None | PASS |
 
-## 2. Configuration checks
+The `100042 frequency=4 timeframe=120` tuning is empirically validated for this lab's current Wazuh 4.14.10 ruleset. Re-run after rule-tree or version changes.
 
-| Check | Observed result | Status |
-|---|---|---|
-| Manager package version | `4.14.10-1` | PASS |
-| Manager service before/after restart | `active` | PASS |
-| Manager `wazuh-analysisd -t` after installing/updating P04 rules | Exit code 0 | PASS |
-| P04 rule XML parsing and IDs | IDs `100040`, `100041`, `100042`; XML parse passed | PASS |
-| Deployed P04 rule file permissions | `root:wazuh`, mode `0640` | PASS |
-| Agent `wazuh-logcollector -t` | Exit code 0 | PASS |
-| Agent `wazuh-agentd -t` | Exit code 0 | PASS |
-| Agent service after restart | `active` | PASS |
-| Agent 001 state after final restart | Not rechecked in the supplied output | PENDING |
-| Agent localfile count for audit.log | Exactly 1 | PASS |
-| Auditd rule | One active `shadow_access` match after duplicate removal and reload | PASS |
+## Live integration
 
-## 3. Synthetic single-event results
+Real SSH session from Kali (`192.168.122.112`) to `my-agent` (`192.168.122.208`) as `p04-labuser`; session UID/loginuid `1008`. Five denied reads of `/etc/shadow` were issued inside the correlation window.
 
-| Test | Input condition | Expected | Observed | Status |
-|---|---|---|---|---|
-| Positive | `key=shadow_access`, `success=no`, `auid=1000` | 100040 / level 7 | 100040 / level 7 | PASS |
-| Negative | `key=shadow_access`, `success=yes` | No custom P04 rule | Base 80700 only | PASS |
-| Negative | `key=other_key`, `success=no` | No custom P04 rule | Base 80700 only | PASS |
+Observed Manager alert:
 
-Phase 2 exposed `audit.key`, `audit.success` and `audit.auid`.
+```json
+{
+  "timestamp": "2026-11-20T22:23:15.802+0000",
+  "rule_id": "100042",
+  "level": 12,
+  "agent": "my-agent",
+  "auid": "1008",
+  "key": "shadow_access",
+  "success": "no"
+}
+```
 
-## 4. Synthetic correlation results
+Observed Agent response log:
 
-Initial configuration used `100042 frequency="5"`. The first five-event test did not generate 100042; `100041` classified the third event. After observing this, the rule was tuned to `frequency="4"`. The second run produced the critical rule on the fifth event.
+```text
+2026-11-20T23:23:15+01:00 [P04-ActiveResponse] LOCKED password authentication for p04-labuser; rule=100042 auid=1008
+```
 
-| Case | Observed results | Status |
-|---|---|---|
-| One denied event | 100040 | PASS |
-| Two denied events, same AUID | 100040; no 100041/100042 | PASS |
-| Three denied events, same AUID | 100041 on third event | PASS |
-| Four denied events, same AUID | 100041; no 100042 | PASS |
-| Five denied events, same AUID | 100042 on fifth event; `frequency=4` | PASS |
-| Different AUID values | Not executed yet | PENDING |
+Account states immediately after response: `p04-labuser L`; `aralrez P`. The repository contains `account-unlocked.png` from recovery as well.
 
-All results above are `wazuh-logtest` synthetic tests. The repository regression runner has not yet been executed from the checked-in file.
+## Configuration checks
 
-## 5. Live and Active Response results
+- `wazuh-analysisd -t`: exit 0.
+- `wazuh-execd -t`: exit 0.
+- Manager service after restart: `active`.
+- Agent 001: `Active`.
+- Auditd `shadow_access` rule: one active match after duplicate removal.
+- Agent `audit.log` localfile reader: exactly one entry.
 
-| Test | Expected evidence | Status |
-|---|---|---|
-| Real SSH login from Kali as `p04-labuser` | `id`, `/proc/self/loginuid`, source and timestamp | NOT RUN |
-| Real Auditd denied-read sequence | `key=shadow_access`, `success=no`, AUID 1008 | NOT RUN |
-| Manager live alerts | Real 100040, 100041 and 100042 records | NOT RUN |
-| Active Response add | `active-responses.log` P04 lock record | NOT RUN |
-| Password state after response | `p04-labuser` is L; `aralrez` remains P | NOT RUN |
-| Manual cleanup | `p04-labuser` returns to P; `aralrez` remains P | NOT RUN |
+## Evidence
 
-Do not mark live/Active Response rows PASS based on `wazuh-logtest` output.
+See `evidence/README.md` for the eight screenshots committed with this project. `wazuh-logtest` regression is synthetic evidence; the live Manager alert and Active Response log are recorded separately above.
 
-## 6. Summary
+## Limitation
 
-- Configuration preflight and synthetic rule matching are partially complete.
-- The 100042 correlation threshold was tuned from 5 to 4 based on observed Wazuh 4.14.10 behavior; the fifth-input-event test now produces the critical rule.
-- Different-AUID regression, checked-in runner execution, live SSH/Auditd, Active Response, cleanup and evidence capture remain.
-- Project status remains **IN PROGRESS**.
+`passwd -l` locks password authentication only. It does not terminate an existing session or prove SSH public-key authentication is disabled. Project 04 does not perform IP blocking or host isolation.

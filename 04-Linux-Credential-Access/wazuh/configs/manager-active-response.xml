@@ -1,12 +1,12 @@
-<!-- Fragment only: append inside an existing <ossec_config> on my-server.
-     Do not replace ossec.conf and do not edit existing Project 01-03 blocks. -->
+<!-- Fragment only: insert once inside the existing Manager <ossec_config>.
+     Do not replace ossec.conf or edit Project 01-03 response blocks. -->
 <command>
   <name>p04-lock-test-account</name>
   <executable>p04-lock-test-account.sh</executable>
   <timeout_allowed>no</timeout_allowed>
 </command>
-
 <active-response>
+  <disabled>no</disabled>
   <command>p04-lock-test-account</command>
   <location>local</location>
   <rules_id>100042</rules_id>
