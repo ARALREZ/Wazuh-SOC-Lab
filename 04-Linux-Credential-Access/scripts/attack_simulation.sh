@@ -1,23 +1,28 @@
-#!/bin/bash
-# Attack simulation for Scenario 04
+#!/usr/bin/env bash
+set -euo pipefail
 
-echo "[+] Scenario 04 - Credential Access simulation"
-echo "[*] Running as user: $(whoami) (uid=$(id -u))"
-echo
+TARGET_USER="p04-labuser"
+TARGET_UID="$(id -u "$TARGET_USER")"
+CURRENT_USER="$(id -un)"
+CURRENT_UID="$(id -u)"
+LOGIN_UID="$(cat /proc/self/loginuid)"
 
-echo "[1/2] Single attempt (should trigger rule 100040)"
-cat /etc/shadow 2>/dev/null || true
-sleep 2
+printf '[P04] Credential Access live test\n'
+printf 'user=%s uid=%s loginuid=%s\n' "$CURRENT_USER" "$CURRENT_UID" "$LOGIN_UID"
 
-echo "[2/2] Multiple rapid attempts (should trigger 100041 → 100042 + Active Response)"
-for i in {1..6}; do
-    echo "  Attempt $i..."
-    cat /etc/shadow 2>/dev/null || true
-    sleep 2
+if [[ "$CURRENT_USER" != "$TARGET_USER" || "$CURRENT_UID" != "$TARGET_UID" || "$LOGIN_UID" != "$TARGET_UID" ]]; then
+  echo "ERROR: start a real SSH login as $TARGET_USER; do not run through sudo or sudo -u." >&2
+  exit 2
+fi
+
+for attempt in 1 2 3 4 5; do
+  printf '[%s/5] Attempt to read /etc/shadow\n' "$attempt"
+  if cat /etc/shadow >/dev/null 2>&1; then
+    echo 'UNEXPECTED: read succeeded'
+  else
+    echo 'Expected: access denied'
+  fi
+  sleep 2
 done
 
-echo
-echo "[+] Attack finished."
-echo "    Check Wazuh Dashboard for rules 100040 / 100041 / 100042"
-echo "    Check: sudo tail -f /var/ossec/logs/active-responses.log"
-echo "    Check: sudo iptables -L INPUT -n | grep DROP"
+printf '[P04] Test finished. Check live Manager alerts 100040, 100041 and 100042.\n'

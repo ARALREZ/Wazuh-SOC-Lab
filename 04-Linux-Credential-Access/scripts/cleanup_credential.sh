@@ -1,13 +1,26 @@
-#!/bin/bash
-# Cleanup after Scenario 04 tests
+#!/usr/bin/env bash
+set -euo pipefail
 
-echo "[+] Cleaning up Scenario 04..."
+TARGET_USER="p04-labuser"
 
-for user in aralrez attacker testuser; do
-  if id "$user" &>/dev/null; then
-    passwd -u "$user" 2>/dev/null && echo "  Unlocked: $user"
-  fi
-done
+if [[ "$EUID" -ne 0 ]]; then
+  echo "Run with sudo: sudo $0" >&2
+  exit 1
+fi
 
-echo "[*] Check iptables manually if needed: sudo iptables -L INPUT -n"
-echo "[+] Cleanup finished."
+if ! id "$TARGET_USER" >/dev/null 2>&1; then
+  echo "Account $TARGET_USER does not exist; nothing to do."
+  exit 0
+fi
+
+STATE="$(passwd -S "$TARGET_USER" | awk '{print $2}')"
+if [[ "$STATE" == "L" ]]; then
+  passwd -u "$TARGET_USER"
+  echo "Unlocked password for $TARGET_USER."
+else
+  echo "No unlock needed; current password state is $STATE."
+fi
+
+passwd -S "$TARGET_USER"
+echo "Administrator state (must remain P):"
+passwd -S aralrez
