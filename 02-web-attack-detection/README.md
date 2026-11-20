@@ -1,6 +1,6 @@
 # Project 02 — Web Attack Detection and Active Response
 
-**Status:** VALIDATED IN LAB — repository evidence reconciliation in progress  
+**Status:** DONE 
 **Last updated:** 2026-11-13  
 **Platform:** Wazuh 4.14.10-1
 
