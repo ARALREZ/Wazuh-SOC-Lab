@@ -1,0 +1,32 @@
+TEST_ID: p03-quarantine-regression-20261119T215756Z-13431
+HOST: my-agent
+SCRIPT: /usr/local/sbin/wazuh-project03-quarantine
+[PASS] Quarantine directory and log are ready.
+QUARANTINE: /var/lib/wazuh-project03/quarantine
+LOG: /var/log/wazuh-project03-quarantine.log
+[PASS] Initialization and secure directory/log permissions
+[PASS] POSIX ACL test fixture configured
+[PASS] User xattr fixture configured through Python os.setxattr/os.getxattr
+SHA256_BEFORE=555dc9e7d67545dbdf7bb9deb1c8182162e499dd1b06dacc859aa81430a0d3f0
+STAT_BEFORE=64770:1310728:98:0:0:640:1768480496:1
+[PASS] File quarantined atomically.
+ITEM: /var/lib/wazuh-project03/quarantine/item.ieuF3ddr
+ITEM_NAME: item.ieuF3ddr
+SHA256: 555dc9e7d67545dbdf7bb9deb1c8182162e499dd1b06dacc859aa81430a0d3f0
+RESTORE: sudo /usr/local/sbin/wazuh-project03-quarantine restore /var/lib/wazuh-project03/quarantine/item.ieuF3ddr
+[PASS] Atomic quarantine, source removal, payload SHA256, inode and metadata
+[PASS] Manifest v2 schema, source path, SHA256 and metadata
+[PASS] Manifest version 2 validation
+[PASS] ACL preserved in quarantine payload
+[PASS] User xattr preserved in quarantine payload
+[PASS] User xattr verified in quarantine payload
+[ERROR] Restore refused: destination already exists. Nothing was overwritten.
+[PASS] Restore with existing destination rejected
+[PASS] Conflict destination and quarantine payload remain intact
+[PASS] File restored.
+PATH: /opt/wazuh-fim-lab/watch/p03-quarantine-regression-20261119T215756Z-13431.txt
+SHA256: 555dc9e7d67545dbdf7bb9deb1c8182162e499dd1b06dacc859aa81430a0d3f0
+[FAIL] Restored metadata/inode mismatch
+REPORT_FILE: /var/tmp/p03-quarantine-regression-20261119T215756Z-13431-regression.log
+SUMMARY_FILE: /var/tmp/p03-quarantine-regression-20261119T215756Z-13431-summary.json
+FINAL_STATUS=FAIL

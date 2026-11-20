@@ -1,0 +1,38 @@
+{
+  "date_utc": "2026-11-20",
+  "run_id": "p03-quarantine-regression-20261120T091758Z-5499",
+  "overall_validation": "REVIEW_REQUIRED",
+  "checks": {
+    "quarantine_regression": 1,
+    "rule_xml": 1,
+    "local_code": 1,
+    "agent": 1,
+    "manager": 1,
+    "fim_negative": 1,
+    "rule_history_export": 1,
+    "screenshots": 0
+  },
+  "quarantine": {
+    "pass": 19,
+    "skip": 0,
+    "fail": 0,
+    "exit_code": 0
+  },
+  "manager_rule_history_counts": {
+    "100030": 16,
+    "100031": 0,
+    "100032": 0,
+    "100033": 0,
+    "100034": 0,
+    "100035": 0,
+    "100036": 0,
+    "100037": 0
+  },
+  "screenshots": {
+    "expected": 15,
+    "present_valid": 14,
+    "missing_or_invalid": 1
+  },
+  "project_status": "IN PROGRESS",
+  "report": "reports/test-runs/p03-final-validation-20261120T092321Z.md"
+}

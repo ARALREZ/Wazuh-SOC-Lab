@@ -1,0 +1,14 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Wazuh Project 03 quarantine audit event",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["timestamp", "action", "original_path", "sha256", "quarantine_item"],
+  "properties": {
+    "timestamp": {"type": "string", "format": "date-time"},
+    "action": {"type": "string", "enum": ["quarantine", "restore"]},
+    "original_path": {"type": "string", "pattern": "^/opt/wazuh-fim-lab/watch/"},
+    "sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "quarantine_item": {"type": "string", "pattern": "^/var/lib/wazuh-project03/quarantine/"}
+  }
+}

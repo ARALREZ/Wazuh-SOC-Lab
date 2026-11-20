@@ -1,0 +1,154 @@
+{
+  "expected": 15,
+  "present_valid": 14,
+  "missing_or_invalid": 1,
+  "files": [
+    {
+      "name": "100030-fim-baseline-manager.png",
+      "path": "evidence/100030-fim-baseline-manager.png",
+      "valid_png": true,
+      "dimensions": [
+        1877,
+        639
+      ],
+      "status": "PRESENT"
+    },
+    {
+      "name": "100031_ssh_config_change.png",
+      "path": "evidence/100031_ssh_config_change.png",
+      "valid_png": true,
+      "dimensions": [
+        1877,
+        639
+      ],
+      "status": "PRESENT"
+    },
+    {
+      "name": "100032-authorized-keys-change-agent.png",
+      "path": "evidence/100032-authorized-keys-change-agent.png",
+      "valid_png": true,
+      "dimensions": [
+        1877,
+        639
+      ],
+      "status": "PRESENT"
+    },
+    {
+      "name": "100033_cron_persistence.png",
+      "path": "evidence/100033_cron_persistence.png",
+      "valid_png": true,
+      "dimensions": [
+        1877,
+        639
+      ],
+      "status": "PRESENT"
+    },
+    {
+      "name": "100034-sensitive-change-correlation.png",
+      "path": "evidence/100034-sensitive-change-correlation.png",
+      "valid_png": true,
+      "dimensions": [
+        1877,
+        639
+      ],
+      "status": "PRESENT"
+    },
+    {
+      "name": "100035_systemd_change.png",
+      "path": "evidence/100035_systemd_change.png",
+      "valid_png": true,
+      "dimensions": [
+        1877,
+        639
+      ],
+      "status": "PRESENT"
+    },
+    {
+      "name": "100036_critical_file_deletion.png",
+      "path": "evidence/100036_critical_file_deletion.png",
+      "valid_png": true,
+      "dimensions": [
+        1877,
+        639
+      ],
+      "status": "PRESENT"
+    },
+    {
+      "name": "100037_permissions_change.png",
+      "path": "evidence/100037_permissions_change.png",
+      "valid_png": true,
+      "dimensions": [
+        1877,
+        639
+      ],
+      "status": "PRESENT"
+    },
+    {
+      "name": "quarantine-01-file-isolated.png",
+      "path": "evidence/quarantine/quarantine-01-file-isolated.png",
+      "valid_png": true,
+      "dimensions": [
+        1065,
+        536
+      ],
+      "status": "PRESENT"
+    },
+    {
+      "name": "quarantine-02-file-restored.png",
+      "path": "evidence/quarantine/quarantine-02-file-restored.png",
+      "valid_png": true,
+      "dimensions": [
+        770,
+        677
+      ],
+      "status": "PRESENT"
+    },
+    {
+      "name": "quarantine-03-hash-metadata-verification.png",
+      "path": "evidence/quarantine/quarantine-03-hash-metadata-verification.png",
+      "valid_png": true,
+      "dimensions": [
+        1039,
+        698
+      ],
+      "status": "PRESENT"
+    },
+    {
+      "name": "quarantine-04-path-restrictions.png",
+      "path": "evidence/quarantine/quarantine-04-path-restrictions.png",
+      "valid_png": true,
+      "dimensions": [
+        876,
+        453
+      ],
+      "status": "PRESENT"
+    },
+    {
+      "name": "quarantine-05-symlink-and-overwrite-protection.png",
+      "path": "evidence/quarantine/quarantine-05-symlink-and-overwrite-protection.png",
+      "valid_png": true,
+      "dimensions": [
+        1053,
+        715
+      ],
+      "status": "PRESENT"
+    },
+    {
+      "name": "quarantine-06-audit-log.png",
+      "path": "evidence/quarantine/quarantine-06-audit-log.png",
+      "valid_png": true,
+      "dimensions": [
+        1920,
+        631
+      ],
+      "status": "PRESENT"
+    },
+    {
+      "name": "regression-summary.png",
+      "path": null,
+      "valid_png": false,
+      "dimensions": null,
+      "status": "MISSING_OR_INVALID"
+    }
+  ]
+}

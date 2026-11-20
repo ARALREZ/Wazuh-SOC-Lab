@@ -1,0 +1,20 @@
+<!--
+Project 03 FIM configuration fragment only.
+Merge the relevant entries into the existing <syscheck> block on my-agent.
+This is NOT a complete ossec.conf and must not replace unrelated settings.
+Back up /var/ossec/etc/ossec.conf before editing.
+Review broad/overlapping directory coverage before applying.
+-->
+<syscheck>
+  <directories check_all="yes" whodata="yes">/etc</directories>
+  <directories check_all="yes">/usr/bin,/usr/sbin</directories>
+  <directories check_all="yes">/bin,/sbin,/boot</directories>
+  <directories check_all="yes" whodata="yes">/home/aralrez/.ssh</directories>
+  <directories check_all="yes" whodata="yes">/var/spool/cron/crontabs</directories>
+  <directories check_all="yes" whodata="yes" report_changes="yes">/opt/wazuh-fim-lab/watch</directories>
+  <whodata>
+    <provider>audit</provider>
+    <restart_audit>yes</restart_audit>
+    <startup_healthcheck>yes</startup_healthcheck>
+  </whodata>
+</syscheck>

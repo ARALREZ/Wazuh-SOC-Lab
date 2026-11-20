@@ -1,0 +1,12 @@
+flowchart TD
+    A[File change on my-agent] --> B[Wazuh Agent syscheck]
+    B --> C[Who-data via audit provider when configured]
+    C --> D[Wazuh Manager over TCP 1514]
+    D --> E[Rules 100030-100037]
+    E --> F[alerts.json and Dashboard]
+    F --> G[Analyst review]
+    G --> H{Manual decision}
+    H -->|No action| I[Continue monitoring]
+    H -->|Lab file approved| J[Manual quarantine CLI]
+    J --> K[SHA256, metadata, manifest and JSONL audit]
+    K --> L[Manual restore and verification]

@@ -1,0 +1,12 @@
+{
+  "test_id": "p03-regression-20261117T183221Z-4501",
+  "started_utc": "2026-11-17T18:32:21Z",
+  "finished_utc": "2026-11-17T18:32:21.806971+00:00",
+  "host": "my-agent",
+  "pass": 16,
+  "skip": 1,
+  "fail": 0,
+  "exit_code": 0,
+  "console_report": "/var/tmp/p03-regression-20261117T183221Z-4501-regression.log",
+  "quarantine_audit_export": "/var/tmp/p03-regression-20261117T183221Z-4501-quarantine-audit.jsonl"
+}

@@ -1,0 +1,30 @@
+{
+  "agent_id": "001",
+  "rule_ids": [
+    "100030",
+    "100031",
+    "100032",
+    "100033",
+    "100034",
+    "100035",
+    "100036",
+    "100037"
+  ],
+  "counts": {
+    "100030": 16,
+    "100031": 0,
+    "100032": 0,
+    "100033": 0,
+    "100034": 0,
+    "100035": 0,
+    "100036": 0,
+    "100037": 0
+  },
+  "total_matching": 16,
+  "records_scanned": 137,
+  "malformed_or_nul_skipped": 0,
+  "sources": [
+    "/var/ossec/logs/alerts/alerts.json"
+  ],
+  "diff_content_exported": false
+}

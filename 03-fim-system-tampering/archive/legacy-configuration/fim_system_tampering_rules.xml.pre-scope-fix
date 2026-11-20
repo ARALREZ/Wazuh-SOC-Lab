@@ -1,0 +1,83 @@
+<group name="syscheck,fim,project03,">
+
+    <!-- 100030: General FIM Event -->
+    <rule id="100030" level="5">
+        <if_sid>550,553,554</if_sid>
+        <description>Project 03: General FIM event detected - $(file)</description>
+        <group>fim_project03,fim_general,</group>
+    </rule>
+
+
+    <!-- 100031: Authentication & Account Tampering -->
+    <rule id="100031" level="10">
+        <if_sid>100030</if_sid>
+        <field name="file" type="pcre2">^/etc/(passwd|shadow|group|gshadow|sudoers|sudoers\.d/[^/]+|pam\.d/[^/]+|ssh/sshd_config(\.d/[^/]+)?)$</field>
+        <description>Project 03: Authentication or account configuration modified - $(file)</description>
+        <group>fim_project03,fim_sensitive_change,fim_account_tampering,</group>
+    </rule>
+
+
+    <!-- 100032: SSH Authorized Keys Modification -->
+    <rule id="100032" level="12">
+        <if_sid>100030</if_sid>
+        <field name="file" type="pcre2">^/(home/[^/]+|root)/\.ssh/authorized_keys$</field>
+        <description>Project 03: SSH authorized_keys modified - $(file)</description>
+        <mitre>
+            <id>T1098.004</id>
+        </mitre>
+        <group>fim_project03,fim_sensitive_change,fim_ssh_key_change,</group>
+    </rule>
+
+
+    <!-- 100033: Cron Persistence Modification -->
+    <rule id="100033" level="12">
+        <if_sid>100030</if_sid>
+        <field name="file" type="pcre2">^(/etc/crontab|/etc/cron\.(d|hourly|daily|weekly|monthly)/[^/]+|/var/spool/cron/crontabs/[^/]+)$</field>
+        <description>Project 03: Cron persistence configuration modified - $(file)</description>
+        <mitre>
+            <id>T1053.003</id>
+        </mitre>
+        <group>fim_project03,fim_sensitive_change,fim_cron_change,</group>
+    </rule>
+
+
+    <!-- 100035: Systemd Persistence Modification -->
+    <rule id="100035" level="12">
+        <if_sid>100030</if_sid>
+        <field name="file" type="pcre2">^/etc/systemd/system/.+</field>
+        <description>Project 03: Systemd persistence configuration modified - $(file)</description>
+        <mitre>
+            <id>T1543.002</id>
+        </mitre>
+        <group>fim_project03,fim_sensitive_change,fim_systemd_change,</group>
+    </rule>
+
+
+    <!-- 100036: Critical File Deletion -->
+    <rule id="100036" level="13">
+        <if_sid>553</if_sid>
+        <field name="file" type="pcre2">^(/etc/(passwd|shadow|group|gshadow|sudoers|sudoers\.d/[^/]+|pam\.d/[^/]+|ssh/sshd_config(\.d/[^/]+)?)|/(home/[^/]+|root)/\.ssh/authorized_keys|/etc/crontab|/etc/cron\.(d|hourly|daily|weekly|monthly)/[^/]+|/var/spool/cron/crontabs/[^/]+|/etc/systemd/system/.+)$</field>
+        <description>Project 03 CRITICAL: Sensitive configuration file deleted - $(file)</description>
+        <group>fim_project03,fim_sensitive_change,fim_critical_deletion,</group>
+    </rule>
+
+    <!-- 100037: Critical Permissions/Ownership Change -->
+    <rule id="100037" level="12">
+        <if_sid>100031,100032,100033,100035</if_sid>
+        <field name="changed_fields" type="pcre2">(^|,\s*)(permission|uid|gid|user_name|group_name)(\s*,|$)</field>
+        <description>Project 03: Sensitive file permissions or ownership changed - $(file)</description>
+        <group>fim_project03,fim_sensitive_change,fim_permissions_ownership,</group>
+    </rule>
+
+
+    <!-- 100034: Correlated Sensitive Changes -->
+    <rule id="100034" level="14" frequency="3" timeframe="300">
+        <if_sid>100031,100032,100033,100035,100036,100037</if_sid>
+        <if_matched_group>fim_sensitive_change</if_matched_group>
+        <field name="audit_uid" type="pcre2">^(?!4294967295$)[0-9]+$</field>
+        <same_field>audit_uid</same_field>
+        <description>Project 03 CRITICAL: Three or more sensitive FIM changes by the same login user within 300 seconds</description>
+        <group>fim_project03,fim_correlation,</group>
+    </rule>
+
+</group>

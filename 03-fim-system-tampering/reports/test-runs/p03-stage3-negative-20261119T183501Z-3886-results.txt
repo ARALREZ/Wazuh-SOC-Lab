@@ -1,0 +1,60 @@
+RUN_ID=p03-stage3-negative-20261119T183501Z-3886
+SCRIPT_HASH=fc53c7f50ce330d2415ec91d43b7832da78ec06721ab1b27b499181b21a37a1b
+
+===== TEST 6: OUTSIDE PATH =====
+[EXPECTED REFUSAL] outside path rejected
+[ERROR] Source must be below /opt/wazuh-fim-lab/watch.
+[PASS] outside path rejected
+
+===== TEST 7: PATH TRAVERSAL =====
+[EXPECTED REFUSAL] path traversal rejected
+[ERROR] Use a canonical path; symlinks and '..' traversal are refused.
+[PASS] path traversal rejected
+
+===== TEST 8: SYMLINK AND HARDLINK =====
+[EXPECTED REFUSAL] symlink rejected
+[ERROR] Symlinks are not allowed.
+[PASS] symlink rejected
+[EXPECTED REFUSAL] hardlink rejected
+[ERROR] Hard-linked files are refused (link count: 2).
+[PASS] hardlink rejected
+
+===== TEST 9: FIFO =====
+[EXPECTED REFUSAL] FIFO rejected
+[ERROR] Source must be an existing regular file.
+[PASS] FIFO rejected
+
+===== TEST 10: OVERWRITE PROTECTION =====
+[PASS] File quarantined atomically.
+ITEM: /var/lib/wazuh-project03/quarantine/item.2vwqVUIc
+ITEM_NAME: item.2vwqVUIc
+SHA256: 5f69a8d26552bef0eef3087ee410c19b8acb7a5838eaaba3438b8cae14c7bc3a
+RESTORE: sudo /usr/local/sbin/wazuh-project03-quarantine restore /var/lib/wazuh-project03/quarantine/item.2vwqVUIc
+[ERROR] Restore refused: destination already exists. Nothing was overwritten.
+[PASS] existing destination protected
+[PASS] File restored.
+PATH: /opt/wazuh-fim-lab/watch/p03-stage3-negative-20261119T183501Z-3886-overwrite.txt
+SHA256: 5f69a8d26552bef0eef3087ee410c19b8acb7a5838eaaba3438b8cae14c7bc3a
+[PASS] restore after conflict removal
+
+===== TEST 11: LOG AND ERROR HANDLING =====
+VALID_JSON=PASS
+QUARANTINE_LOG=PASS
+RESTORE_LOG=PASS
+REJECTED_OPERATIONS_NOT_LOGGED_AS_SUCCESS=PASS
+TOTAL_VALID_JSON_RECORDS: 12
+[PASS] JSON audit log and error handling
+
+===== CLEANUP OWN FIXTURES =====
+[PASS] test fixtures cleaned
+[PASS] quarantine empty after tests
+
+==================================
+FINAL TEST 6-11 SUMMARY
+==================================
+RUN_ID=p03-stage3-negative-20261119T183501Z-3886
+PASS=10
+FAIL=0
+TOTAL=10
+REPORT=/var/tmp/p03-stage3-negative-20261119T183501Z-3886-results.txt
+FINAL_STATUS=PASS

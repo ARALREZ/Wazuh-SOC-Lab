@@ -1,0 +1,70 @@
+TEST_ID: p03-regression-20261117T183221Z-4501
+HOST: my-agent
+SCRIPT: /usr/local/sbin/wazuh-project03-quarantine
+
+========== 1. INITIALIZATION / PERMISSIONS ==========
+[PASS] Quarantine directory and log are ready.
+QUARANTINE: /var/lib/wazuh-project03/quarantine
+LOG: /var/log/wazuh-project03-quarantine.log
+[PASS] Initialization and secure directory/log permissions
+
+========== 2. CREATE FIXTURE FILE ==========
+[PASS] ACL fixture configured
+[SKIP] xattr tools setfattr/getfattr unavailable
+SHA256_BEFORE: c985a1949c2ec1cd0143129fc6aff70989c1f434d8ee9a0aed78dc065c50065f
+METADATA_BEFORE: 81:0:0:640:1768480496
+
+========== 3. QUARANTINE / PAYLOAD / MANIFEST ==========
+[PASS] File quarantined.
+ITEM: /var/lib/wazuh-project03/quarantine/item.Il0wAlFj
+SHA256: c985a1949c2ec1cd0143129fc6aff70989c1f434d8ee9a0aed78dc065c50065f
+RESTORE: sudo /usr/local/sbin/wazuh-project03-quarantine restore /var/lib/wazuh-project03/quarantine/item.Il0wAlFj
+[PASS] Quarantine payload hash and item protections
+[PASS] Manifest schema, source path and hash
+[PASS] Manifest validation
+[PASS] ACL preserved in quarantine payload
+
+========== 4. RESTORE OVERWRITE PROTECTION ==========
+[ERROR] Restore refused: destination already exists. Nothing was overwritten.
+[PASS] Existing destination overwrite rejected
+[PASS] Conflict destination and quarantine item left intact
+
+========== 5. RESTORE / INTEGRITY ==========
+[PASS] File restored.
+PATH: /opt/wazuh-fim-lab/watch/p03-regression-20261117T183221Z-4501.txt
+SHA256: c985a1949c2ec1cd0143129fc6aff70989c1f434d8ee9a0aed78dc065c50065f
+[PASS] SHA256, size, owner, group, mode and mtime preserved after restore
+[PASS] ACL preserved after restore
+
+========== 6. NEGATIVE INPUT TESTS ==========
+[ERROR] Symlinks are not allowed.
+[PASS] Symlink source rejected
+[ERROR] Source must be an existing regular file.
+[PASS] FIFO/special file source rejected
+[ERROR] Hard-linked files are refused (link count: 2).
+[PASS] Hard-linked source rejected
+[ERROR] Source must be below /opt/wazuh-fim-lab/watch.
+[PASS] Path outside laboratory root rejected
+[ERROR] Use a canonical path; symlinks and '..' traversal are refused.
+[PASS] Path traversal/non-canonical path rejected
+[ERROR] Quarantine item is missing or is a symlink.
+[PASS] Symlink quarantine item on restore rejected
+
+========== 7. JSONL LOG VALIDATION ==========
+[PASS] JSONL syntax, required fields, timestamps, source path, hash and action pair
+{"timestamp": "2026-11-17T18:32:21.279846+00:00", "action": "quarantine", "original_path": "/opt/wazuh-fim-lab/watch/p03-regression-20261117T183221Z-4501.txt", "sha256": "c985a1949c2ec1cd0143129fc6aff70989c1f434d8ee9a0aed78dc065c50065f", "quarantine_item": "/var/lib/wazuh-project03/quarantine/item.Il0wAlFj"}
+{"timestamp": "2026-11-17T18:32:21.566324+00:00", "action": "restore", "original_path": "/opt/wazuh-fim-lab/watch/p03-regression-20261117T183221Z-4501.txt", "sha256": "c985a1949c2ec1cd0143129fc6aff70989c1f434d8ee9a0aed78dc065c50065f", "quarantine_item": "/var/lib/wazuh-project03/quarantine/item.Il0wAlFj"}
+[PASS] JSONL audit validation and export
+
+========== 8. RESULT SUMMARY ==========
+TEST_ID: p03-regression-20261117T183221Z-4501
+PASS: 16
+SKIP: 1
+FAIL: 0
+EXPECTED FIM MONITORING ROOT: /opt/wazuh-fim-lab/watch
+AUDIT_EXPORT: /var/tmp/p03-regression-20261117T183221Z-4501-quarantine-audit.jsonl
+MANAGER CHECK: run tests/integration/check-fim-alerts.py for this TEST_ID on my-server.
+[PASS] QUARANTINE REGRESSION SUITE COMPLETED
+REPORT_FILE: /var/tmp/p03-regression-20261117T183221Z-4501-regression.log
+SUMMARY_FILE: /var/tmp/p03-regression-20261117T183221Z-4501-summary.json
+AUDIT_EXPORT: /var/tmp/p03-regression-20261117T183221Z-4501-quarantine-audit.jsonl

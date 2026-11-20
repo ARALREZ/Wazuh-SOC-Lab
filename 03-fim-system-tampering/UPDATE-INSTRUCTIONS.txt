@@ -1,0 +1,83 @@
+PROJECT 03 UPDATE PACKAGE — SAFE APPLY GUIDE
+
+A. BACKUP FIRST (on Fedora)
+
+cd ~/Projects/Wazuh-SOC-Lab
+PROJECT="03-fim-system-tampering"
+TS="$(date -u +%Y%m%dT%H%M%SZ)"
+BACKUP="../project03-docs-backup-${TS}"
+mkdir -p "$BACKUP"
+
+for f in \
+  README.md \
+  architecture/architecture.md architecture/detection-flow.md architecture/response-policy.md \
+  architecture/diagrams/fim-event-flow.mmd architecture/diagrams/incident-investigation-flow.mmd \
+  evidence/README.md reports/test-results.md reports/risk-assessment.md \
+  tests/README.md tests/regression/README.md tests/regression/expected-results.md \
+  tests/regression/run-quarantine-regression.sh scripts/response/README.md
+ do
+   if [ -f "$PROJECT/$f" ]; then
+     mkdir -p "$BACKUP/$(dirname "$f")"
+     cp -a "$PROJECT/$f" "$BACKUP/$f"
+   fi
+done
+
+echo "Backup created: $BACKUP"
+
+B. EXTRACT THE UPDATE
+
+Download `03-fim-system-tampering-complete-update.zip` from this chat to `~/Downloads`, then run:
+
+unzip -o ~/Downloads/03-fim-system-tampering-complete-update.zip -d ~/Projects/Wazuh-SOC-Lab
+
+The archive updates only Project 03. The top-level UPDATE-INSTRUCTIONS.txt is also included for convenience.
+
+C. WHAT THE PACKAGE DOES NOT OVERWRITE
+
+- `wazuh/rules/fim_system_tampering_rules.xml` (current live rule source)
+- `scripts/response/quarantine-file.sh` (current working quarantine implementation)
+- `tests/integration/check-fim-alerts.py` (existing Manager checker)
+- existing PNG screenshots, alert JSONL, Who-data JSONL, quarantine audit JSONL and test-run evidence
+- Project 00, Project 05 or repository-root README
+
+D. REVIEW AND APPLY THE LOCAL CLEANUP
+
+cd ~/Projects/Wazuh-SOC-Lab/03-fim-system-tampering
+bash scripts/maintenance/cleanup-project03-layout.sh --dry-run
+
+Read the proposed moves/removals. If the plan matches the local tree, execute:
+
+bash scripts/maintenance/cleanup-project03-layout.sh --apply
+
+The script moves retired files into `archive/`, removes only generated Python cache and empty `.gitkeep` placeholders, and preserves functional scripts, XML, fixtures, screenshots and raw evidence. It stops if an archive destination already exists.
+
+The old Python wrapper `scripts/response/project03-quarantine` is associated with experimental rule `100038`; it is not part of the current `100030–100037` rule set. It is moved to `archive/legacy-active-response/` and must not be deployed or connected to Active Response.
+
+E. VALIDATE THE UPDATE
+
+cd ~/Projects/Wazuh-SOC-Lab/03-fim-system-tampering
+bash -n scripts/evidence/capture-quarantine-05.sh
+bash -n scripts/evidence/capture-quarantine-06.sh
+bash -n scripts/maintenance/cleanup-project03-layout.sh
+bash -n tests/regression/run-quarantine-regression.sh
+python3 -m json.tool tests/fixtures/quarantine-cases.json >/dev/null
+python3 -m json.tool tests/fixtures/quarantine-log.schema.json >/dev/null
+
+git diff --check
+git status --short -- .
+
+Do not run `git add -A`, `git clean`, `git reset --hard` or global stash. Do not touch Project 05 or the repository-root README.
+
+F. OUTSTANDING LAB STEPS
+
+1. Copy `scripts/evidence/capture-quarantine-05.sh` and `capture-quarantine-06.sh` to `my-agent` or make the repository available there.
+2. Execute both on `my-agent` as root and capture the actual terminal PNGs:
+   - `quarantine-05-symlink-and-overwrite-protection.png`
+   - `quarantine-06-audit-log.png`
+3. Copy the PNGs into `evidence/quarantine/` and verify with `file` and `sha256sum`.
+4. Deploy the corrected regression runner to `my-agent`, compare it with this repository version, then execute it. It validates manifest version 2 and uses the Python xattr API; it has NOT been run by packaging.
+5. Run the existing Manager-side `tests/integration/check-fim-alerts.py` on `my-server` for that exact TEST_ID, using its actual argument syntax.
+6. Copy only matching run reports and sanitized JSONL extracts into the repo. Do not modify the original `alerts.json`.
+7. Create `regression-summary.png` only after the new Agent and Manager checks complete.
+
+Project 03 remains IN PROGRESS until those tasks and final Git review are complete.

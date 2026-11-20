@@ -1,0 +1,12 @@
+flowchart TD
+    A[Receive FIM alert] --> B[Confirm agent, rule, path and timestamp]
+    B --> C[Review Who-data fields if present]
+    C --> D{Sensitive change?}
+    D -->|No| E[Document and monitor]
+    D -->|Yes| F[Correlate related events by identity and time]
+    F --> G{Path inside lab watch?}
+    G -->|No| H[Do not use lab quarantine tool]
+    G -->|Yes| I[Administrator approves manual quarantine]
+    I --> J[Verify SHA256 and metadata]
+    J --> K[Preserve JSONL audit]
+    K --> L[Restore and verify]

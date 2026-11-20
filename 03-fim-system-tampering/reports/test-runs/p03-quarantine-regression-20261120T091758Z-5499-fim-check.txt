@@ -1,0 +1,122 @@
+[sudo] password for aralrez: 
+TEST_ID: p03-quarantine-regression-20261120T091758Z-5499
+AGENT_ID: 001
+MATCHING_ALERTS: 14
+MALFORMED_OR_NUL_LINES_SKIPPED: 0
+
+---
+TIME: 2026-11-20T09:17:58.453+0000
+RULE: 100030 LEVEL: 5
+EVENT: added
+PATH: /opt/wazuh-fim-lab/watch/p03-quarantine-regression-20261120T091758Z-5499.txt
+LOGIN_USER: aralrez UID: 1000
+PROCESS: /usr/bin/bash
+
+---
+TIME: 2026-11-20T09:17:58.563+0000
+RULE: 100030 LEVEL: 5
+EVENT: deleted
+PATH: /opt/wazuh-fim-lab/watch/p03-quarantine-regression-20261120T091758Z-5499.txt
+LOGIN_USER: aralrez UID: 1000
+PROCESS: /usr/bin/mv
+
+---
+TIME: 2026-11-20T09:17:58.850+0000
+RULE: 100030 LEVEL: 5
+EVENT: added
+PATH: /opt/wazuh-fim-lab/watch/p03-quarantine-regression-20261120T091758Z-5499.txt
+LOGIN_USER: aralrez UID: 1000
+PROCESS: /usr/bin/bash
+
+---
+TIME: 2026-11-20T09:17:58.923+0000
+RULE: 100030 LEVEL: 5
+EVENT: deleted
+PATH: /opt/wazuh-fim-lab/watch/p03-quarantine-regression-20261120T091758Z-5499.txt
+LOGIN_USER: aralrez UID: 1000
+PROCESS: /usr/bin/rm
+
+---
+TIME: 2026-11-20T09:17:59.040+0000
+RULE: 100030 LEVEL: 5
+EVENT: added
+PATH: /opt/wazuh-fim-lab/watch/p03-quarantine-regression-20261120T091758Z-5499.txt
+LOGIN_USER: aralrez UID: 1000
+PROCESS: /usr/bin/ln
+
+---
+TIME: 2026-11-20T09:17:59.186+0000
+RULE: 100030 LEVEL: 5
+EVENT: added
+PATH: /opt/wazuh-fim-lab/watch/p03-quarantine-regression-20261120T091758Z-5499-symlink-target.txt
+LOGIN_USER: aralrez UID: 1000
+PROCESS: /usr/bin/bash
+
+---
+TIME: 2026-11-20T09:17:59.193+0000
+RULE: 100030 LEVEL: 5
+EVENT: added
+PATH: /opt/wazuh-fim-lab/watch/p03-quarantine-regression-20261120T091758Z-5499.symlink
+LOGIN_USER: aralrez UID: 1000
+PROCESS: /usr/bin/ln
+
+---
+TIME: 2026-11-20T09:17:59.231+0000
+RULE: 100030 LEVEL: 5
+EVENT: added
+PATH: /opt/wazuh-fim-lab/watch/p03-quarantine-regression-20261120T091758Z-5499-hard1.txt
+LOGIN_USER: aralrez UID: 1000
+PROCESS: /usr/bin/bash
+
+---
+TIME: 2026-11-20T09:17:59.237+0000
+RULE: 100030 LEVEL: 5
+EVENT: added
+PATH: /opt/wazuh-fim-lab/watch/p03-quarantine-regression-20261120T091758Z-5499-hard2.txt
+LOGIN_USER: aralrez UID: 1000
+PROCESS: /usr/bin/ln
+
+---
+TIME: 2026-11-20T09:17:59.361+0000
+RULE: 100030 LEVEL: 5
+EVENT: deleted
+PATH: /opt/wazuh-fim-lab/watch/p03-quarantine-regression-20261120T091758Z-5499.symlink
+LOGIN_USER: aralrez UID: 1000
+PROCESS: /usr/bin/rm
+
+---
+TIME: 2026-11-20T09:17:59.361+0000
+RULE: 100030 LEVEL: 5
+EVENT: deleted
+PATH: /opt/wazuh-fim-lab/watch/p03-quarantine-regression-20261120T091758Z-5499-symlink-target.txt
+LOGIN_USER: aralrez UID: 1000
+PROCESS: /usr/bin/rm
+
+---
+TIME: 2026-11-20T09:17:59.363+0000
+RULE: 100030 LEVEL: 5
+EVENT: deleted
+PATH: /opt/wazuh-fim-lab/watch/p03-quarantine-regression-20261120T091758Z-5499-hard1.txt
+LOGIN_USER: aralrez UID: 1000
+PROCESS: /usr/bin/rm
+
+---
+TIME: 2026-11-20T09:17:59.365+0000
+RULE: 100030 LEVEL: 5
+EVENT: deleted
+PATH: /opt/wazuh-fim-lab/watch/p03-quarantine-regression-20261120T091758Z-5499-hard2.txt
+LOGIN_USER: aralrez UID: 1000
+PROCESS: /usr/bin/rm
+
+---
+TIME: 2026-11-20T09:17:59.406+0000
+RULE: 100030 LEVEL: 5
+EVENT: deleted
+PATH: /opt/wazuh-fim-lab/watch/p03-quarantine-regression-20261120T091758Z-5499.txt
+LOGIN_USER: aralrez UID: 1000
+PROCESS: /usr/bin/rm
+
+RULE_COUNTS: {'100030': 14}
+EXPORTED_JSONL: /var/tmp/p03-quarantine-regression-20261120T091758Z-5499-fim-alerts.jsonl
+[PASS] FIM alerts observed; expected rule 100030 present.
+Connection to 192.168.122.178 closed.

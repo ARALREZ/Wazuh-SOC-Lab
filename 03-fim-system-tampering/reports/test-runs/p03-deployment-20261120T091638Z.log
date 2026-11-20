@@ -1,0 +1,6 @@
+[sudo] password for aralrez: 
+34535a1d7f88545b4afc2e887219ae687340f241b7d9451767c1f7a73c26d7cd  /usr/local/sbin/wazuh-project03-quarantine
+[PASS] Quarantine directory and log are ready.
+QUARANTINE: /var/lib/wazuh-project03/quarantine
+LOG: /var/log/wazuh-project03-quarantine.log
+Connection to 192.168.122.208 closed.

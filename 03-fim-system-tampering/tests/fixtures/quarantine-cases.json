@@ -1,0 +1,19 @@
+{
+  "suite": "Project 03 manual quarantine regression",
+  "version": 1,
+  "cases": [
+    {"id": "Q-001", "category": "positive", "name": "quarantine_regular_file", "expected": "file stored in quarantine; original path absent; SHA256 unchanged"},
+    {"id": "Q-002", "category": "positive", "name": "restore_regular_file", "expected": "original path recreated; SHA256 and POSIX metadata unchanged"},
+    {"id": "Q-003", "category": "positive", "name": "preserve_acl", "expected": "ACL identical before quarantine and after restore; SKIP only when tools/ACL unavailable"},
+    {"id": "Q-004", "category": "optional", "name": "preserve_user_xattr", "expected": "user xattr identical across quarantine and restore; SKIP only when tools/filesystem unavailable"},
+    {"id": "Q-005", "category": "negative", "name": "reject_existing_restore_destination", "expected": "restore fails; existing destination and quarantine payload remain unchanged"},
+    {"id": "Q-006", "category": "negative", "name": "reject_symlink_source", "expected": "quarantine fails; symlink target remains unchanged"},
+    {"id": "Q-007", "category": "negative", "name": "reject_special_file", "expected": "FIFO quarantine attempt fails"},
+    {"id": "Q-008", "category": "negative", "name": "reject_hardlink", "expected": "quarantine fails when link count is greater than one"},
+    {"id": "Q-009", "category": "boundary", "name": "reject_outside_path", "expected": "quarantine fails for a path outside the watch root"},
+    {"id": "Q-010", "category": "boundary", "name": "reject_path_traversal", "expected": "quarantine fails for non-canonical traversal path"},
+    {"id": "Q-011", "category": "negative", "name": "reject_symlink_quarantine_item", "expected": "restore fails for a symlink item path"},
+    {"id": "Q-012", "category": "integration", "name": "jsonl_audit_log", "expected": "one quarantine and one restore JSON record with matching TEST_ID, path and SHA256"},
+    {"id": "Q-013", "category": "integration", "name": "wazuh_fim_alert", "expected": "Manager records at least one matching Agent 001 FIM alert from the watch root; base rule 100030 expected"}
+  ]
+}
