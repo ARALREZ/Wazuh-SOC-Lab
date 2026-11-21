@@ -1,95 +1,105 @@
-# Detection Flow — SSH Brute Force
+# Detection Flow — SSH Authentication Attacks
 
-## 1. Event Collection
+## 1. Collection path
 
-The monitored endpoint is `my-agent` (`192.168.122.208`).
+The monitored endpoint is `my-agent` (`192.168.122.208`). SSH authentication events are collected from `journald` by the Wazuh Agent and forwarded to `my-server` (`192.168.122.178`) over TCP/1514.
 
-SSH authentication events are collected from `journald` by the
-Wazuh Agent and forwarded to `my-server` (`192.168.122.178`)
-over TCP/1514.
+The current lab uses journald for the relevant SSH events. Do not add `/var/log/auth.log` as a second input until the live Agent configuration has been checked for duplicate collection.
 
-The deployment already collects SSH events through journald.
-Do not add `/var/log/auth.log` as a duplicate input without
-first verifying the actual collection configuration.
+## 2. Relevant built-in rules
 
-## 2. Default Wazuh SSH Rules
-
-| Rule ID | Event type |
+| Rule ID | Role in this project |
 |---|---|
-| 5715 | Successful SSH authentication |
-| 5716 | SSH authentication failure / public-key failure parent |
-| 5760 | Failed password / keyboard-interactive authentication |
+| `5715` | Successful SSH authentication event family used by the current Wazuh ruleset |
+| `5716` | SSH authentication failure parent used for public-key failure matching |
+| `5760` | Failed password / keyboard-interactive authentication parent used by the password-failure correlations |
 
-The exact decoded fields must be checked against the event in
-`wazuh-logtest`; do not assume every SSH failure has the same decoder
-or base rule.
+Verify the decoded event and parent rule for any new SSH message with `wazuh-logtest`. Not all authentication failures necessarily follow the same decoder path.
 
-## 3. Custom Rule Evaluation
+## 3. Custom rule evaluation
 
-| Custom ID | Description | Level | Detection logic |
-|---|---|---:|---|
-| 100010 | Trusted IP | 3 | Base rule 5760 from `192.168.122.1` |
-| 100001 | SSH Soft Detection | 6 | 3 matched 5760 failures from same source within 120 s |
-| 100002 | SSH Brute Force | 10 | `frequency=4`, `timeframe=120`, same source IP |
-| 100003 | Failed Public Key | 6 | Parent 5716 and `Failed publickey` match |
-| 100004 | Password Spraying | 10 | 5 failed events, same source IP, different usernames within 300 s |
-| 100005 | Successful Login After Brute Force | 14 | Successful login correlated with 100001 activity; same source IP and username within 300 s |
+| Custom ID | Level | Detection | Conditions in the project XML |
+|---|---:|---|---|
+| `100010` | 3 | Trusted-source failure | Parent `5760`; source `192.168.122.1` |
+| `100001` | 6 | Soft brute-force signal | Three matches of `5760` from the same source within 120 seconds; excludes `192.168.122.1` |
+| `100002` | 10 | Brute force | Four matched `5760` events within 120 seconds, same source IP and same username; excludes trusted source |
+| `100003` | 6 | Failed public-key authentication | Parent `5716` and `Failed publickey` message match |
+| `100004` | 10 | Password spraying | Four matched `5760` events within 300 seconds, same source IP and different usernames; excludes trusted source |
+| `100005` | 14 | Successful login after failed authentication | Current event is in `authentication_success`; prior event matches are in `authentication_failed`; same source IP and username within 300 seconds; excludes trusted source |
 
-### Rule 100002 threshold behavior
+### 3.1 Observed brute-force threshold
 
-The third failed-password event triggers 100001. In the verified
-five-attempt sequence, the third event is no longer emitted as 5760
-for subsequent custom-rule correlation.
+With the current loaded rule tree and the five-failure positive fixture, the observed sequence is:
 
-Therefore, `100002` currently uses `frequency=4` and triggers on
-the fifth attempt in the tested sequence.
+| Attempt | Expected custom result |
+|---:|---|
+| 1 | None |
+| 2 | None |
+| 3 | `100001` |
+| 4 | None |
+| 5 | `100002` |
 
-### Trusted source handling
+This observed fifth-attempt behavior results from the interaction between the soft-detection rule and the base `5760` events. It is specific to the tested ruleset and must be rechecked after a Wazuh upgrade or rule change.
 
-The trusted source address is `192.168.122.1`, the address observed
-by the Agent for Fedora-originated SSH traffic.
+### 3.2 Rule 100005 correlation semantics
 
-Rule 100010 is evaluated for that source. It is excluded from
-the brute-force and password-spraying rules.
+Rule `100005` is not configured as a direct child of `100001`. It uses:
 
-## 4. Active Response
+- `if_group=authentication_success` for the event being evaluated;
+- `if_matched_group=authentication_failed` for prior authentication failures;
+- `same_srcip` and `same_user` to constrain the correlation;
+- `frequency=3` and `timeframe=300`;
+- an exclusion for the trusted source.
 
-Manager configuration contains two separate response blocks:
+The positive regression fixtures expect `100005` to trigger on the successful authentication event. A failed-login alert alone does not prove account compromise.
 
-| Trigger | Command | Location | Timeout |
-|---|---|---|---:|
-| 100002 | `firewall-drop` | `local` | 600 seconds |
-| 100005 | `firewall-drop` | `local` | 600 seconds |
+## 4. Trusted source
 
-The response is intended to execute on the Agent associated with
-the triggering alert.
+The trusted source is `192.168.122.1`, the address observed by the Agent for Fedora-originated SSH traffic in this network. Rule `100010` labels matching parent `5760` events at level 3. The attack-correlation rules also explicitly exclude this address.
 
-No response is configured for 100001, 100003, 100004 or 100010.
+`wazuh/configs/global-whitelist.xml` contains a fragment for the existing Manager `<global>` whitelist. Merge the element into the existing section; do not replace that section.
 
-Live enforcement remains unverified until the Agent execution log,
-firewall state and a controlled connection attempt demonstrate
-that the attacker IP was blocked.
+## 5. Active Response
 
-## 5. Validation Layers
+The Manager reference configuration invokes Wazuh's built-in `firewall-drop` command for:
 
-1. Parse XML files locally.
-2. Validate the Manager rules and Active Response configuration.
-3. Use `wazuh-logtest` for individual synthetic events.
-4. Run the 17-case fast regression suite.
-5. Run all 6 slow time-window tests with real delays.
-6. Perform controlled SSH scenarios from Kali.
-7. Verify Active Response and actual firewall behavior on the Agent.
+| Trigger rule | Location | Timeout |
+|---|---|---:|
+| `100002` | `local` | 600 seconds |
+| `100005` | `local` | 600 seconds |
 
-`wazuh-logtest` validates rule matching only. It does not perform
-network authentication, execute the response or change firewall state.
+`local` means the endpoint associated with the alert. In this scenario the expected enforcement point is `my-agent`.
 
-## 6. Related Files
+Rules `100001`, `100003`, `100004` and `100010` do not trigger firewall blocking.
+
+## 6. Validation sequence
+
+1. Parse the project XML and validate the Manager rule configuration.
+2. Validate the Active Response configuration using the appropriate Wazuh validation command.
+3. Use `wazuh-logtest` for individual fixtures and regression cases.
+4. Run the fast suite (17 cases).
+5. Run the full suite with the delayed cases included (17 fast + 6 slow).
+6. Run live SSH tests from Kali against the dedicated lab endpoint.
+7. Correlate the Manager alert, Agent Active Response log, firewall state and Kali connection result.
+8. Wait for the configured timeout and verify the automatic delete and restored SSH connectivity.
+
+The runner's commands are:
+
+```bash
+python3 tests/regression/test_ssh_rules.py
+python3 tests/regression/test_ssh_rules.py --include-slow
+```
+
+The second command runs all 23 cases, including the fast cases again. The runner does not expose a slow-only option.
+
+`wazuh-logtest` is a rule-matching tool. It does not test real SSH, Active Response execution or firewall behavior.
+
+## 7. Related files
 
 - Rules: `wazuh/rules/ssh_brute_force_rules.xml`
-- Active Response reference: `wazuh/configs/active-response.xml`
+- Active Response: `wazuh/configs/active-response.xml`
 - Whitelist fragment: `wazuh/configs/global-whitelist.xml`
 - Regression runner: `tests/regression/test_ssh_rules.py`
-- Expected results: `tests/regression/expected-results.md`
-- Actual results: `reports/test-results.md`
-- Evidence register: `evidence/README.md`
-
+- Expected outcomes: `tests/regression/expected-results.md`
+- Recorded results: `reports/test-results.md`
+- Screenshot register: `evidence/README.md`
